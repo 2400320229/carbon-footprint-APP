@@ -37,6 +37,9 @@ dependencies:
   shared_preferences: 2.4.0
   sqflite:
   logger: ^1.4.0
+  image_picker: ^0.8.5+3
+  flutter_email_sender: ^5.0.2
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:

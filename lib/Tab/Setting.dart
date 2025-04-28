@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../DataBase.dart';
 import 'package:logger/logger.dart';
 
@@ -18,7 +19,7 @@ class Setting_page extends StatefulWidget {
 
 class _Setting_pageState extends State<Setting_page> {
 
-  List<Node> N_L = [];
+  List<My_Node> N_L = <My_Node>[].obs;
   TextEditingController NodeName = new TextEditingController();
   @override
   void initState() {
@@ -42,13 +43,13 @@ class _Setting_pageState extends State<Setting_page> {
             ),
             TextField(controller: NodeName,
             decoration: InputDecoration(
-              label:Text("输入文本"),
+              label:Text("holle".tr),
               border: OutlineInputBorder()
             ),),
             Row(
               children: [
                 ElevatedButton(onPressed: () async  {
-                  Node a = new Node(name: NodeName.text);
+                  My_Node a = new My_Node(name: NodeName.text);
                   await nodeDatabase.create(a);
                   print("data:::"+await nodeDatabase.readAllNodes().toString());
                   await relodeData();
@@ -74,7 +75,7 @@ class _Setting_pageState extends State<Setting_page> {
 }
 
 class NodeList extends StatefulWidget {
-  List<Node> node_list = [];
+  List<My_Node> node_list = <My_Node>[].obs;
   NodeList({super.key,required this.node_list});
 
   @override
@@ -83,7 +84,7 @@ class NodeList extends StatefulWidget {
 
 class _NodeListState extends State<NodeList> {
   String delete_name = '';
-  List<Node> node_list = [];
+  List<My_Node> node_list = <My_Node>[].obs;
   void _showDialog(String name){
     showDialog(context: context, builder: (BuildContext dialog_context) {
       return AlertDialog(

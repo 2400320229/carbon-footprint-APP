@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_try/Tab/Category.dart';
 import 'package:flutter_try/Tab/Setting.dart';
 import 'package:flutter_try/Tab/Home.dart';
+import 'package:flutter_try/land.dart';
+import 'package:flutter_try/language/language.dart';
+import 'package:flutter_try/routers/routers.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,10 +27,16 @@ class _MyAppState extends State<MyApp> {
   ];
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      translations: Message(),
+      locale: Locale("zh","CN"),
+      fallbackLocale: Locale("en","US"),
+      initialRoute: "/",
+      defaultTransition: Transition.rightToLeftWithFade,
+      getPages: AppPage.routers,
         home: Scaffold(
       appBar: AppBar(
-        title: const Text("你好flutter"),
+        title: Text("holle".tr),
       ),
       body: Page[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
