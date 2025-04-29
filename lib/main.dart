@@ -6,6 +6,8 @@ import 'package:flutter_try/land.dart';
 import 'package:flutter_try/language/language.dart';
 import 'package:flutter_try/routers/routers.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -14,17 +16,25 @@ void main() {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+
   int currentIndex=0;
   List<Widget>Page=[
     Home_page(),
     Category_page(),
     Setting_page()
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init_app();
+  }
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -287,4 +297,20 @@ class Button_x extends StatelessWidget {
               BorderSide(width: 2, color: Colors.white12))),
     );
   }
+}
+
+
+void init_app()async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool? is_add = await prefs.getBool("is");
+  if(is_add == true){
+
+  }else{
+    await add_data();
+    prefs.setBool("is_add_data", true);
+  }
+
+}
+add_data()async {
+  //添加初始数据
 }

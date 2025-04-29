@@ -13,13 +13,17 @@ class Home_page extends StatefulWidget {
   @override
   State<Home_page> createState() => _Home_pageState();
 }
-List<Item> item_yi_arr = [new Item("衣", 10)];
-List<Item> item_shi_arr = [ new Item("食", 20)];
-List<Item> item_zhu_arr = [new Item("住", 30)];
-List<Item> item_xing_arr = [new Item("行", 40)];
+/*List<Item> item_yi_arr = [new Item(name:"衣", count:10)];
+List<Item> item_shi_arr = [ new Item(name:"食", count:20)];
+List<Item> item_zhu_arr = [new Item(name:"住", count:30)];
+List<Item> item_xing_arr = [new Item(name:"行", count:40)];*/
+List<Item> item_yi_arr = [];
+List<Item> item_shi_arr = [];
+List<Item> item_zhu_arr = [];
+List<Item> item_xing_arr = [];
 List<List<Item>> arr_type = [];
 int Select_count = 0;
-Item select_item = new Item('', 0);
+Item select_item = new Item(name:'', count:0,type: 0);
 bool is_show_count = false;
 class _Home_pageState extends State<Home_page> {
 
