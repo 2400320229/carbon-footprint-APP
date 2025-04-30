@@ -1,6 +1,9 @@
-import 'dart:convert';
 
+import 'dart:async';
+import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:flutter_try/Base/Item.dart';
+import 'package:flutter_try/land.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:get/get.dart';
@@ -71,12 +74,12 @@ class NodeDataBase{
     
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (db,version){
         return Future.wait([
           db.execute("CREATE TABLE nodes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"),
           db.execute("CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, user_name TEXT NOT NULL,password TEXT NOT NULL)"),
-          db.execute("CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,count INTEGER NOT NULL,type INTEGER NOT NULL)")
+          db.execute("CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,count DOUBLE NOT NULL,type INTEGER NOT NULL)")
         ]);
       }
     );
@@ -87,7 +90,49 @@ class NodeDataBase{
     await db.insert("nodes", node.toMap());
     return node;
   }
+  Future<Item> insert_Item(Item a)async{
+    final db = await instance.database;
+    db.insert("items", a.toMap());
+    logger.d(a.toString()+"is_add");
+    return a;
+  }
 
+  delet_Item(String name)async {
+    final db = await instance.database;
+    db.delete("item",where:"name = ?",whereArgs: [name]);
+  }
+  Future<List<Item>> get_ItemList(int type) async {
+    try {
+      final db = await instance.database;
+      // 检查数据库是否成功打开
+      if (db == null) {
+        print('Database is not initialized.');
+        return [];
+      }
+      final _ItemList = await db.query("items", where: "type = ?", whereArgs: [type]);
+      logger.d('Query result: ${_ItemList.toString()}, Query type: ${type.toString()}');
+      if (_ItemList.isEmpty) {
+        print('No data found for type: $type');
+      }
+      List<Item> result = _ItemList.map((json) => Item.fromMap(json)).toList();
+      return result;
+    } catch (e) {
+      print('Error getting item list: $e');
+      rethrow;
+    }
+  }
+  Future<Map<String,List<Item>>>get_allItem()async{
+    List<Item> yi_Item_List = await get_ItemList(1);
+    List<Item> shi_Item_List = await get_ItemList(2);
+    List<Item> zhu_Item_List = await get_ItemList(3);
+    List<Item> xing_Item_List = await get_ItemList(4);
+    return{
+      "1":yi_Item_List,
+      "2":shi_Item_List,
+      "3":zhu_Item_List,
+      "4":xing_Item_List,
+    };
+  }
   Future<List<My_Node>> readAllNodes() async{
     final db = await instance.database;
     final result = await db.query("nodes");

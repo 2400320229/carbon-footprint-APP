@@ -8,11 +8,13 @@ import 'package:logger/logger.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
+import 'main.dart';
 // 发送邮箱验证码
 
 
 var logger = Logger();
-final nodedb = NodeDataBase.instance;
+
 
 class Land extends StatefulWidget {
   const Land({super.key});

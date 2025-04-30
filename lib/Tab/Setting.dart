@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import '../DataBase.dart';
 import 'package:logger/logger.dart';
 
+import '../main.dart';
+
 var logger = Logger();
-final nodeDatabase = NodeDataBase.instance;
+
 
 
 class Setting_page extends StatefulWidget {
@@ -50,8 +52,8 @@ class _Setting_pageState extends State<Setting_page> {
               children: [
                 ElevatedButton(onPressed: () async  {
                   My_Node a = new My_Node(name: NodeName.text);
-                  await nodeDatabase.create(a);
-                  print("data:::"+await nodeDatabase.readAllNodes().toString());
+                  await nodedb.create(a);
+                  print("data:::"+await nodedb.readAllNodes().toString());
                   await relodeData();
 
                 }, child: Text("+"))
@@ -64,7 +66,7 @@ class _Setting_pageState extends State<Setting_page> {
   }
 
   relodeData()async{
-    var a = await nodeDatabase.readAllNodes();
+    var a = await nodedb.readAllNodes();
     logger.d(a.toString());
     logger.d(N_L.toString());
     setState((){
@@ -142,8 +144,8 @@ class _NodeListState extends State<NodeList> {
   }
   deleteNode(String name) async{
 
-    await nodeDatabase.delet(name);
-    var a = await nodeDatabase.readAllNodes();
+    await nodedb.delet(name);
+    var a = await nodedb.readAllNodes();
     logger.d(a.toString());
     setState((){
       node_list = a;

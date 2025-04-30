@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_try/Base/Item.dart';
 import 'package:flutter_try/Tab/Category.dart';
 import 'package:flutter_try/Tab/Setting.dart';
 import 'package:flutter_try/Tab/Home.dart';
-import 'package:flutter_try/land.dart';
+
 import 'package:flutter_try/language/language.dart';
 import 'package:flutter_try/routers/routers.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'DataBase.dart';
 
+final nodedb = NodeDataBase.instance;
 void main() {
   runApp(MyApp());
 }
@@ -302,15 +305,30 @@ class Button_x extends StatelessWidget {
 
 void init_app()async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool? is_add = await prefs.getBool("is");
-  if(is_add == true){
-
+  var list = await nodedb.get_allItem();
+  bool? is_add = await prefs.getBool("is_add_data");
+  if(list["1"]!.isNotEmpty){
+    logger.d("have_value");
+    logger.d(list);
   }else{
+    logger.d("is_load");
     await add_data();
     prefs.setBool("is_add_data", true);
   }
 
 }
 add_data()async {
-  //添加初始数据
+  var List = [
+    new Item(name: "1", count: 2, type: 1),
+    new Item(name: "2", count: 3, type: 1),
+    new Item(name: "1", count: 2, type: 2),
+    new Item(name: "3", count: 2, type: 2),
+    new Item(name: "4", count: 2, type: 3),
+    new Item(name: "1", count: 2, type: 3),
+    new Item(name: "2", count: 2, type: 4),
+    new Item(name: "1", count: 2, type: 4)
+  ];
+  for(Item a in List){
+    nodedb.insert_Item(a);
+  }
 }

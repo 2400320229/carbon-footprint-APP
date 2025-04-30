@@ -1,43 +1,47 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter_try/Base/Item.dart';
+import 'package:flutter_try/main.dart';
 import 'package:get/get.dart';
 import 'package:flutter_try/land.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class Home_page extends StatefulWidget {
   const Home_page({super.key});
   @override
   State<Home_page> createState() => _Home_pageState();
 }
-/*List<Item> item_yi_arr = [new Item(name:"衣", count:10)];
-List<Item> item_shi_arr = [ new Item(name:"食", count:20)];
-List<Item> item_zhu_arr = [new Item(name:"住", count:30)];
-List<Item> item_xing_arr = [new Item(name:"行", count:40)];*/
+
 List<Item> item_yi_arr = [];
 List<Item> item_shi_arr = [];
 List<Item> item_zhu_arr = [];
 List<Item> item_xing_arr = [];
-List<List<Item>> arr_type = [];
+List<List<Item>> arr_type = [[],[],[],[]];
+Map<String,List<Item>> all_ItemList = {};
 int Select_count = 0;
 Item select_item = new Item(name:'', count:0,type: 0);
+Item add_new_item = new Item(name:'', count:0,type: 0);
 bool is_show_count = false;
+
+
 class _Home_pageState extends State<Home_page> {
 
+  final GlobalKey<_My_GridviewState> childKey = GlobalKey();
   String _recognizedText = '';
   File? _selectedImage;
+  int is_add_change = 0;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    arr_type.add(item_yi_arr);
-    arr_type.add(item_shi_arr);
-    arr_type.add(item_zhu_arr);
-    arr_type.add(item_xing_arr);
-
+    logger.d(all_ItemList);
+    init();
   }
 
   Future<void> _pickImage() async {
@@ -53,6 +57,7 @@ class _Home_pageState extends State<Home_page> {
   TextEditingController massage = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: Color(0xFF728873),
       appBar: AppBar(
@@ -91,7 +96,8 @@ class _Home_pageState extends State<Home_page> {
                     setState(() {
                       is_show_count = true;
                     });
-                  },)),
+
+                  },key: childKey,)),
 
                 ]
 
@@ -128,14 +134,24 @@ class _Home_pageState extends State<Home_page> {
             ),
           ),
           if(is_show_count)
-            Conpute_page(On_show: (){
-              setState(() {
-                is_show_count = false;
-              });
-            })
+            Conpute_page(
+              On_show: (){
+                setState(() {
+                  is_show_count = false;
+                });
+              },
+              is_add: (){
+                setState(() {
+                  arr_type[Select_count].insert(arr_type[Select_count].length-1,add_new_item);
+                });
+              },
+            )
         ],
       )
     );
+  }
+  init()async{
+    all_ItemList = await nodedb.get_allItem();
   }
   Future<void> sendCode(String email) async {
     /*final response = await http.post(
@@ -166,13 +182,61 @@ class _Home_pageState extends State<Home_page> {
 }
 class My_Gridview extends StatefulWidget {
   final VoidCallback Show;
-  const My_Gridview({super.key,required this.Show});
+
+  My_Gridview({super.key,required this.Show});
 
   @override
   State<My_Gridview> createState() => _My_GridviewState();
 }
 
+/*class CounterProvider extends ChangeNotifier {
+  int counter = 0;
+
+  void incrementCounter() {
+    arr_type[select_item.type-1].add(add_new_item);
+    counter++;
+    notifyListeners();
+  }
+}*/
+
 class _My_GridviewState extends State<My_Gridview> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+  init()async{
+
+    List<List<Item>> arr = [[],[],[],[]];
+    Timer(Duration(seconds: 1), () {
+      logger.d("item_yi_arr"+all_ItemList.toString());
+      if(all_ItemList.isNotEmpty){
+        item_yi_arr = all_ItemList["1"]!;
+        item_yi_arr.add(new Item(name: "add", count: 0, type: 0));
+
+        item_shi_arr = all_ItemList["2"]!;
+        item_shi_arr.add(new Item(name: "add", count: 0, type: 0));
+
+        item_zhu_arr = all_ItemList["3"]!;
+        item_zhu_arr.add(new Item(name: "add", count: 0, type: 0));
+
+        item_xing_arr = all_ItemList["4"]!;
+        item_xing_arr.add(new Item(name: "add", count: 0, type: 0));
+        logger.d(item_yi_arr.toString()+"is_yi");
+      }
+      arr[0] = item_yi_arr;
+      arr[1] = item_shi_arr;
+      arr[2] = item_zhu_arr;
+      arr[3] = item_xing_arr;
+      setState(() {
+        arr_type = arr;
+        logger.d(arr_type);
+      });
+    });
+
+
+  }
   @override
   Widget build(context) {
     return GridView.builder(
@@ -187,12 +251,10 @@ class _My_GridviewState extends State<My_Gridview> {
     itemBuilder: (context,index){
     return GestureDetector(
       child: Container(
-        width: 10,
-        height: 10,
         padding: EdgeInsets.all(20),
         decoration:BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
+          color:arr_type[Select_count][index].type==0?Color(0xFF8C8C8C): Colors.white,
         ),
         child: Text(arr_type[Select_count][index].name),
       ),
@@ -206,20 +268,84 @@ class _My_GridviewState extends State<My_Gridview> {
     );
   }
 }
+
 class Conpute_page extends StatefulWidget {
   final VoidCallback On_show;
-  const Conpute_page({super.key,required this.On_show});
+  final VoidCallback is_add;
+  const Conpute_page({super.key,required this.On_show,required this.is_add});
 
   @override
   State<Conpute_page> createState() => _Conpute_pageState();
 }
-
 class _Conpute_pageState extends State<Conpute_page> {
   var input_text = TextEditingController();
+  var add_name = TextEditingController();
+  var add_count = TextEditingController();
+  var add_type = select_item.type;
   String result = '';
+  add_item()async{
+    if(add_count.text.isNotEmpty&&add_name.text.isNotEmpty){
+      add_new_item = await new Item(name: add_name.text, count: double.parse(add_count.text), type: Select_count+1);
+      logger.d(add_new_item.name+add_new_item.type.toString());
+      logger.d("double +++"+double.parse(add_count.text).toString());
+      await nodedb.insert_Item(add_new_item);
+    }
+
+    widget.is_add();
+  }
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return select_item.type == 0?
+    Stack(
+      children: [
+        GestureDetector(
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.black.withOpacity(0.4),
+          ),
+          onTap: (){widget.On_show();},
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            width: double.infinity,
+            height: 300,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight: Radius.circular(10))
+            ),
+            child:Column(
+              children: [
+                Text(select_item.name),
+                TextField(controller: add_name,
+                decoration: InputDecoration(
+                  label: Text("名字"),
+                  border: OutlineInputBorder()
+                ),),
+                TextField(controller: add_count,
+                  decoration: InputDecoration(
+                      label: Text("数值"),
+                      border: OutlineInputBorder()
+                  ),),
+                Row(
+                  children: [
+                    ElevatedButton(onPressed: (){
+                      add_item();
+                      widget.On_show();
+                    }, child: Text("添加")),
+                    ElevatedButton(onPressed: (){
+                      widget.On_show();
+                      }, child: Text("保存")),
+                  ],
+                )
+              ],
+            ) ,
+          ),
+        )
+      ],
+    )
+    :Stack(
       children: [
         GestureDetector(
           child: Container(

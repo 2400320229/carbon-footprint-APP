@@ -14,12 +14,14 @@ class Item {
   Map<String,dynamic> toMap(){
     return {
       "name":name,
-      "count":count
+      "count":count,
+      "type":type
     };
   }
 
   factory Item.fromMap(Map<String,dynamic> map){
     return Item(
+      type: map["type"],
         name: map["name"],
       count: map["count"]
     );
