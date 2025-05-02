@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Tab/Setting.dart';
@@ -26,7 +25,9 @@ class Land extends StatefulWidget {
 class _LandState extends State<Land> {
   TextEditingController pass_word = new TextEditingController();
   TextEditingController user_name = new TextEditingController();
-
+  TextEditingController emil = new TextEditingController();
+  TextEditingController code = new TextEditingController();
+  bool is_success = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -35,9 +36,9 @@ class _LandState extends State<Land> {
   }
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: Scaffold(
+    return Scaffold(
         body: Container(
+          color: Colors.white,
           alignment: Alignment.center,
           child:SizedBox(
             width: 400,
@@ -57,28 +58,43 @@ class _LandState extends State<Land> {
                       border: OutlineInputBorder()
                   ),
                 ),
+                TextField(controller: emil,
+                  decoration: InputDecoration(
+                      label: Text("邮箱"),
+                      border: OutlineInputBorder()
+                  ),
+                ),
+                SizedBox(height: 10,),
+                Row(
+                    children: [
+                      TextField(controller: code,),
+                      ElevatedButton(onPressed: (){
+                        sendCode(emil.text);
+                      }, child: Text("获取验证码"))
+                    ]
+                ),
+                SizedBox(height: 10,),
                 Row(
                   children: [
-                    ElevatedButton(onPressed: (){get_all_User();}, child: Text("get user")),
+                    ElevatedButton(onPressed: (){Get.back();}, child: Text("返回")),
                     ElevatedButton(onPressed: (){
-                      /*send();
-                      _sendEmail();*/
-                      Get.back();
-                      sendCode("2029771797@qq.com");
-                      }, child: Text("send_email")),
-                    ElevatedButton(onPressed: (){insert_user();}, child: Text("insert user"))
+                      insert_user();
+                      if(is_success){Get.back();}
+                      else{Get.snackbar("错误", "登录失败");}
+                      }, child: Text("登录"))
                   ],
                 )
               ],
             ),
           )
         )
-      )
-    );
+      );
   }
 
   insert_user()async{
-    await nodedb.insert_user(new My_User(u_n: user_name.text, p_w: pass_word.text));
+    //await nodedb.insert_user(new My_User(u_n: user_name.text, p_w: pass_word.text));
+    await verifyCode(emil.text, code.text);
+    is_success = true;
   }
   get_all_User()async{
     List<My_User> u_l = await nodedb.getAllUser();
@@ -155,6 +171,7 @@ class _LandState extends State<Land> {
       headers: {'Content-Type': 'application/json'},
     );
     print(response.body);
+    Get.snackbar("code", response.body);
   }
 }
 //politeness

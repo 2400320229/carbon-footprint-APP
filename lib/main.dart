@@ -3,6 +3,7 @@ import 'package:flutter_try/Base/Item.dart';
 import 'package:flutter_try/Tab/Category.dart';
 import 'package:flutter_try/Tab/Setting.dart';
 import 'package:flutter_try/Tab/Home.dart';
+import 'package:flutter_try/Tab/User.dart';
 
 import 'package:flutter_try/language/language.dart';
 import 'package:flutter_try/routers/routers.dart';
@@ -30,7 +31,8 @@ class _MyAppState extends State<MyApp> {
   List<Widget>Page=[
     Home_page(),
     Category_page(),
-    Setting_page()
+    Setting_page(),
+    User_page()
   ];
   @override
   void initState() {
@@ -52,9 +54,11 @@ class _MyAppState extends State<MyApp> {
         title: Text("holle".tr),
       ),
       body: Page[currentIndex],
+
       bottomNavigationBar: BottomNavigationBar(
 
         fixedColor: Colors.green,
+          unselectedItemColor: Colors.black12,
           currentIndex: currentIndex,
           onTap: (index){
           setState(() {
@@ -62,9 +66,10 @@ class _MyAppState extends State<MyApp> {
           });
           },
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home),label: "home"),
-            BottomNavigationBarItem(icon: Icon(Icons.category),label: "category"),
-            BottomNavigationBarItem(icon: Icon(Icons.settings),label: "settings")
+            BottomNavigationBarItem(icon: Icon(Icons.home),label: "计算"),
+            BottomNavigationBarItem(icon: Icon(Icons.category),label: "统计"),
+            BottomNavigationBarItem(icon: Icon(Icons.settings),label: "AI"),
+            BottomNavigationBarItem(icon: Icon(Icons.person),label: "用户")
           ]),
     ));
   }

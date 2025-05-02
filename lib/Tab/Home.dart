@@ -12,11 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-class Home_page extends StatefulWidget {
-  const Home_page({super.key});
-  @override
-  State<Home_page> createState() => _Home_pageState();
-}
+
 
 List<Item> item_yi_arr = [];
 List<Item> item_shi_arr = [];
@@ -29,7 +25,11 @@ Item select_item = new Item(name:'', count:0,type: 0);
 Item add_new_item = new Item(name:'', count:0,type: 0);
 bool is_show_count = false;
 
-
+class Home_page extends StatefulWidget {
+  const Home_page({super.key});
+  @override
+  State<Home_page> createState() => _Home_pageState();
+}
 class _Home_pageState extends State<Home_page> {
 
   final GlobalKey<_My_GridviewState> childKey = GlobalKey();
@@ -57,11 +57,42 @@ class _Home_pageState extends State<Home_page> {
   TextEditingController massage = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: Color(0xFF728873),
-      appBar: AppBar(
-        actions: [
+        appBar: AppBar(
+          bottom:PreferredSize(
+            preferredSize: const Size.fromHeight(kBottomNavigationBarHeight),
+            child: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_balance_wallet),
+                  label: '衣',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.emoji_food_beverage),
+                  label: '食',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.house),
+                  label: '住',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.directions_bike),
+                  label: '行',
+                ),
+              ],
+              currentIndex: Select_count,
+              selectedItemColor: Colors.amber[800],
+              unselectedItemColor: Colors.black12,
+              onTap: (index){
+                setState(() {
+                  Select_count = index;
+                });
+              },
+            ),
+
+
+            /*actions: [
           ElevatedButton(onPressed: (){
             setState(() {
               Select_count = 0;
@@ -83,26 +114,27 @@ class _Home_pageState extends State<Home_page> {
             });
           }, child: Text("行"))
 
-        ],
-      ),
-      body: Stack(
-        children: [
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(20),
-            child:Column(
-                children: [
-                  Expanded(child: My_Gridview(Show: (){
-                    setState(() {
-                      is_show_count = true;
-                    });
+        ],*/
+          ),
+        ),
+        body: Stack(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(20),
+              child:Column(
+                  children: [
+                    Expanded(child: My_Gridview(Show: (){
+                      setState(() {
+                        is_show_count = true;
+                      });
 
-                  },key: childKey,)),
+                    },key: childKey,)),
 
-                ]
+                  ]
 
 
-              /*if (_selectedImage != null)
+                /*if (_selectedImage != null)
               Image.file(
                 _selectedImage!,
                 height: 200,
@@ -131,23 +163,23 @@ class _Home_pageState extends State<Home_page> {
               Get.snackbar("en", "US",backgroundColor: Colors.green);
               Get.updateLocale(locale);
             }, child: Text('US'))*/
+              ),
             ),
-          ),
-          if(is_show_count)
-            Conpute_page(
-              On_show: (){
-                setState(() {
-                  is_show_count = false;
-                });
-              },
-              is_add: (){
-                setState(() {
-                  arr_type[Select_count].insert(arr_type[Select_count].length-1,add_new_item);
-                });
-              },
-            )
-        ],
-      )
+            if(is_show_count)
+              Conpute_page(
+                On_show: (){
+                  setState(() {
+                    is_show_count = false;
+                  });
+                },
+                is_add: (){
+                  setState(() {
+                    arr_type[Select_count].insert(arr_type[Select_count].length-1,add_new_item);
+                  });
+                },
+              )
+          ],
+        )
     );
   }
   init()async{
@@ -189,16 +221,6 @@ class My_Gridview extends StatefulWidget {
   State<My_Gridview> createState() => _My_GridviewState();
 }
 
-/*class CounterProvider extends ChangeNotifier {
-  int counter = 0;
-
-  void incrementCounter() {
-    arr_type[select_item.type-1].add(add_new_item);
-    counter++;
-    notifyListeners();
-  }
-}*/
-
 class _My_GridviewState extends State<My_Gridview> {
   @override
   void initState() {
@@ -209,7 +231,7 @@ class _My_GridviewState extends State<My_Gridview> {
   init()async{
 
     List<List<Item>> arr = [[],[],[],[]];
-    Timer(Duration(seconds: 1), () {
+    Timer(Duration(seconds: 2), () {
       logger.d("item_yi_arr"+all_ItemList.toString());
       if(all_ItemList.isNotEmpty){
         item_yi_arr = all_ItemList["1"]!;
@@ -241,7 +263,7 @@ class _My_GridviewState extends State<My_Gridview> {
   Widget build(context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
+      crossAxisCount: 4,
           crossAxisSpacing: 10, // 水平间距
           mainAxisSpacing: 10,  // 垂直间距
           childAspectRatio: 1.0 // 子项宽高比
@@ -331,8 +353,14 @@ class _Conpute_pageState extends State<Conpute_page> {
                 Row(
                   children: [
                     ElevatedButton(onPressed: (){
-                      add_item();
-                      widget.On_show();
+                      if(add_name.text.isNotEmpty&&add_count.text.isNotEmpty){
+                        add_item();
+                        widget.On_show();
+
+                      }else{
+                        Get.snackbar("请输入数据", "");
+                      }
+
                     }, child: Text("添加")),
                     ElevatedButton(onPressed: (){
                       widget.On_show();

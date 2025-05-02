@@ -9,19 +9,32 @@ import 'package:path/path.dart';
 import 'package:get/get.dart';
 class My_Node{
   String name;
+  String? image_path;
 
   My_Node({required this.name});
 
   Map<String,dynamic> toMap(){
     return {
-      "name":name
+      "name":name,
+      "path":image_path
     };
   }
-
+  set_image_path(String path){
+    this.image_path = path;
+  }
   factory My_Node.fromMap(Map<String,dynamic> map){
-    return My_Node(
-      name: map["name"]
-    );
+    try{
+      My_Node a = new My_Node(
+          name: map["name"],
+      );
+      a.set_image_path(map["path"]);
+      return a;
+    }catch(e){
+      return My_Node(
+          name: map["name"]
+      );
+    }
+
   }
   @override
   String toString() {
@@ -74,10 +87,10 @@ class NodeDataBase{
     
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: (db,version){
         return Future.wait([
-          db.execute("CREATE TABLE nodes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"),
+          db.execute("CREATE TABLE nodes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,path TEXT)"),
           db.execute("CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, user_name TEXT NOT NULL,password TEXT NOT NULL)"),
           db.execute("CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,count DOUBLE NOT NULL,type INTEGER NOT NULL)")
         ]);
@@ -94,6 +107,7 @@ class NodeDataBase{
     final db = await instance.database;
     db.insert("items", a.toMap());
     logger.d(a.toString()+"is_add");
+
     return a;
   }
 

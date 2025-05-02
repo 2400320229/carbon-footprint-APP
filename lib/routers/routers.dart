@@ -6,7 +6,7 @@ import '../land.dart';
 
 class AppPage{
   static final routers = [
-    GetPage(name: "/", page: () => HomePage()),
+    GetPage(name: "/", page: () => MyApp()),
     GetPage(name: "/land", page: () => Land()),
   ];
 }
