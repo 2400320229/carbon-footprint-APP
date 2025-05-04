@@ -50,9 +50,6 @@ class _MyAppState extends State<MyApp> {
       defaultTransition: Transition.rightToLeftWithFade,
       getPages: AppPage.routers,
         home: Scaffold(
-      appBar: AppBar(
-        title: Text("holle".tr),
-      ),
       body: Page[currentIndex],
 
       bottomNavigationBar: BottomNavigationBar(

@@ -9,12 +9,7 @@ class AIService{
   static String chat_api = '/chat/completions';
   List<Map<String,String>> message_history = [];
 
-
-
   Future<String> getChatCompletion(String prompt) async {
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
     try {
       // 添加用户的新消息到对话历史
       message_history = await getHistory();
@@ -60,7 +55,7 @@ class AIService{
 
         // 添加AI的回复到对话历史
         message_history.add({
-          'role': 'user',
+          'role': 'assistant',
           'content':real_result
         });
         saveHistory(message_history);
@@ -68,6 +63,10 @@ class AIService{
       } else {
 
         logger.d('Failed to load completion: ${response.statusCode}');
+        logger.d("body:"+ jsonEncode({
+          'model': 'deepseek-chat',
+          'messages': message_history,
+        }),);
         return 'fail';
 
       }
@@ -78,8 +77,10 @@ class AIService{
     }
   }
 
-  void clearConversation() {
+  clearConversation() async{
     message_history.clear();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('my_History', '');
   }
 
   saveHistory(List<Map<String,String>> list)async{

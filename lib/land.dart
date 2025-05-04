@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Tab/Setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../DataBase.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -38,36 +39,44 @@ class _LandState extends State<Land> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+          width: double.infinity,
+          height: double.infinity,
           color: Colors.white,
           alignment: Alignment.center,
           child:SizedBox(
             width: 400,
             height: 600,
-            child: Column(
+            child:Column(
               children: [
-                TextField(controller: user_name,
+                Expanded(child: TextField(controller: user_name,
                   decoration: InputDecoration(
                       label: Text("用户名"),
                       border: OutlineInputBorder()
                   ),
                 ),
+                ),
                 SizedBox(height: 10,),
-                TextField(controller: pass_word,
+                Expanded(child: TextField(controller: pass_word,
                   decoration: InputDecoration(
                       label: Text("密码"),
                       border: OutlineInputBorder()
                   ),
                 ),
-                TextField(controller: emil,
+                ),
+                SizedBox(height: 10,),
+                Expanded(child: TextField(controller: emil,
                   decoration: InputDecoration(
                       label: Text("邮箱"),
                       border: OutlineInputBorder()
                   ),
                 ),
+                ),
                 SizedBox(height: 10,),
                 Row(
                     children: [
-                      TextField(controller: code,),
+                      Expanded(
+                          child:TextField(controller: code,),
+                      ),
                       ElevatedButton(onPressed: (){
                         sendCode(emil.text);
                       }, child: Text("获取验证码"))
@@ -78,10 +87,10 @@ class _LandState extends State<Land> {
                   children: [
                     ElevatedButton(onPressed: (){Get.back();}, child: Text("返回")),
                     ElevatedButton(onPressed: (){
-                      insert_user();
+                      //insert_user();
                       if(is_success){Get.back();}
                       else{Get.snackbar("错误", "登录失败");}
-                      }, child: Text("登录"))
+                    }, child: Text("登录"))
                   ],
                 )
               ],
@@ -92,6 +101,8 @@ class _LandState extends State<Land> {
   }
 
   insert_user()async{
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("is_land", true);
     //await nodedb.insert_user(new My_User(u_n: user_name.text, p_w: pass_word.text));
     await verifyCode(emil.text, code.text);
     is_success = true;

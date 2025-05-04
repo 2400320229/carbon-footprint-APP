@@ -315,6 +315,11 @@ class _Conpute_pageState extends State<Conpute_page> {
 
     widget.is_add();
   }
+  add_conut_node()async{
+    DateTime now = DateTime.now();
+    var a = new CountNode(count: double.parse(result), type: Select_count+1, date: now.toString());
+    await nodedb.insert_CountNode(a);
+  }
   @override
   Widget build(BuildContext context) {
     return select_item.type == 0?
@@ -407,7 +412,9 @@ class _Conpute_pageState extends State<Conpute_page> {
                       });
                       logger.d(result);
                     }, child: Text("计算")),
-                    ElevatedButton(onPressed: (){}, child: Text("保存")),
+                    ElevatedButton(onPressed: (){
+                      add_conut_node();
+                    }, child: Text("保存")),
                   ],
                 )
               ],

@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Base/Item.dart';
@@ -34,7 +35,6 @@ class My_Node{
           name: map["name"]
       );
     }
-
   }
   @override
   String toString() {
@@ -56,8 +56,6 @@ class My_User{
   set_id(String id){
     this.id = id;
   }
-
-
   get_name(){
     return _user_name;
   }
@@ -67,9 +65,7 @@ class My_User{
   get_id(){
     return id;
   }
-
 }
-
 class NodeDataBase{
   static final NodeDataBase instance = NodeDataBase._init();
   static Database? _database;
@@ -87,12 +83,13 @@ class NodeDataBase{
     
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: (db,version){
         return Future.wait([
           db.execute("CREATE TABLE nodes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,path TEXT)"),
           db.execute("CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, user_name TEXT NOT NULL,password TEXT NOT NULL)"),
-          db.execute("CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,count DOUBLE NOT NULL,type INTEGER NOT NULL)")
+          db.execute("CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,count DOUBLE NOT NULL,type INTEGER NOT NULL)"),
+          db.execute("CREATE TABLE count_nodes(id INTEGER PRIMARY KEY AUTOINCREMENT, count DOUBLE NOT NULL,type INT NOT NULL,date TEXT NOT NULL)")
         ]);
       }
     );
@@ -109,6 +106,17 @@ class NodeDataBase{
     logger.d(a.toString()+"is_add");
 
     return a;
+  }
+  Future<CountNode> insert_CountNode(CountNode a)async{
+    final db = await instance.database;
+    db.insert("count_nodes", a.toMap());
+    logger.d("insert :"+a.toString());
+    return a;
+  }
+
+  delet_CountNode()async{
+    final db = await instance.database;
+
   }
 
   delet_Item(String name)async {
@@ -146,6 +154,11 @@ class NodeDataBase{
       "3":zhu_Item_List,
       "4":xing_Item_List,
     };
+  }
+  Future<List<CountNode>> getAllCountNode()async{
+    final db = await instance.database;
+    final result = await db.query("count_nodes");
+    return result.map((json)=> CountNode.fromMap(json)).toList();
   }
   Future<List<My_Node>> readAllNodes() async{
     final db = await instance.database;
