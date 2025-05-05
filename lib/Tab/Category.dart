@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_try/AIrequest/request.dart';
 import 'package:flutter_try/land.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 AIService deepseek = new AIService();
@@ -25,11 +26,12 @@ class _Category_pageState extends State<Category_page> {
     });
   }
   chat()async{
-    setState(() {
-      is_waiting = true;
-    });
+
     logger.d("chat history::"+History.toString());
     if(question.text.isNotEmpty){
+      setState(() {
+        is_waiting = true;
+      });
       logger.d(question.text);
       await deepseek.getChatCompletion(question.text);
       await deepseek.getHistory().then((r){
@@ -40,6 +42,14 @@ class _Category_pageState extends State<Category_page> {
         });
         logger.d("new chat history::"+History.toString());
       });
+    }else{
+      Get.showSnackbar(GetSnackBar(
+        title: "请输入问题",
+        backgroundColor: Colors.green,
+        message: "请输入问题",
+        duration: Duration(seconds: 2),
+        
+      ));
     }
   }
   clean()async{

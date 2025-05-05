@@ -20,21 +20,25 @@ class _User_pageState extends State<User_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-         UserLanding(),
-          ElevatedButton(onPressed: (){
-            setState(() {
-              is_show_data = true;
-            });
-          }, child: Text('数据')),
-          if(is_show_data)
-            Expanded(child: dataList(show: (){setState(() {
-              is_show_data = false;
-            });})
-            )
-        ],
-      ),
+      body:Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            SizedBox(height: 50,),
+            UserLanding(),
+            ElevatedButton(onPressed: (){
+              setState(() {
+                is_show_data = true;
+              });
+            }, child: Text('数据')),
+            if(is_show_data)
+              Expanded(child: dataList(show: (){setState(() {
+                is_show_data = false;
+              });})
+              )
+          ],
+        ),
+      ) 
     );
   }
 }
@@ -108,35 +112,43 @@ class _UserLandingState extends State<UserLanding> {
     return Container(
       width: double.infinity,
       height: 100,
-        decoration: BoxDecoration(border:Border()),
-        child: Column(
-          children: [
-            if(is_landing)
-              GestureDetector(
-                child: Row(
-                  children: [
-                    Icon(Icons.person,size: 50,),
-                    Text("")
-                  ],
-                ),
-                onTap: (){
+      alignment: Alignment.center,
+      decoration: BoxDecoration(borderRadius:BorderRadius.circular(10),
+          border:Border.all(
+              color: Color(0xFF728873),
+              width: 2,
+              style: BorderStyle.solid
+          )
+      ),
 
-                },
+      child: Column(
+        children: [
+          if(is_landing)
+            GestureDetector(
+              child: Row(
+                children: [
+                  Icon(Icons.person,size: 50,),
+                  Text("")
+                ],
               ),
-            if(!is_landing)
-              GestureDetector(
-                child: Row(
-                  children: [
-                    Text("未登录",style: TextStyle(fontSize: 40,color: Color(0x67B678)),),
-                    Text("点击登录")
-                  ],
-                ),
-                onTap: (){
-                  Get.toNamed("/land",arguments: {"value":"你点击了登录"});
-                },
-              )
-          ],
-        ),
+              onTap: (){
+
+              },
+            ),
+          if(!is_landing)
+            GestureDetector(
+              child: Row(
+                children: [
+                  Text("未登录",style: TextStyle(fontSize: 40,color: Color(0x67B678)),),
+                  Text("点击登录")
+                ],
+              ),
+              onTap: (){
+                Get.toNamed("/land",arguments: {"value":"你点击了登录"});
+              },
+            )
+        ],
+      ),
     );
   }
 }
