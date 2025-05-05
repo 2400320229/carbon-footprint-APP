@@ -33,7 +33,6 @@ class _LandState extends State<Land> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    user_name.text = Get.arguments["value"];
   }
   @override
   Widget build(BuildContext context) {

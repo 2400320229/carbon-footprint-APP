@@ -1,15 +1,18 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_try/Base/Item.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../DataBase.dart';
 import 'package:logger/logger.dart';
 import '../main.dart';
 
 var logger = Logger();
-
-
+List<CountNode> data = [];
+Map<String,double> summary = {};
 class Setting_page extends StatefulWidget {
 
   const Setting_page({super.key});
@@ -20,21 +23,96 @@ class Setting_page extends StatefulWidget {
 
 class _Setting_pageState extends State<Setting_page> {
 
+  bool? is_land = false;
+
+  List<Widget> land=[
+    PieChartSample2(),
+    BarChartSample(),
+    LineChartSample()
+  ];
+  List<Widget> un_land=[
+    Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("请登录",style: TextStyle(fontSize: 50),),
+        ElevatedButton(onPressed: (){
+          Get.toNamed("/land");
+        }, child: Text("去登录"))
+      ],
+    )
+  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(10),
       width: double.infinity,
     height: double.infinity,
     child:Column(
-      children: [
-        PieChartSample2(),
-        BarChartSample(),
-        LineChartSample()
-      ],
+        mainAxisAlignment: MainAxisAlignment.center,
+      children: is_land==true?land:un_land
     )
     );
   }
+  init()async{
+
+    final p = await SharedPreferences.getInstance();
+    is_land =  p.getBool("island");
+    Timer(Duration(seconds: 1),(){
+      setState(() {
+        is_land = true;
+      });
+    });
+    data = await nodedb.getAllCountNode();
+    await analyze_data();
+    logger.d(data);
+  }
+  analyze_data(){
+    double s_yi = 0;
+    double s_zhu = 0;
+    double s_xing = 0;
+    double s_shi = 0;
+    for(var a in data){
+      logger.d("type::"+a.type.toString());
+      switch(a.type){
+        case 1:
+          s_yi += a.count;
+          break;
+        case 2:
+          s_shi += a.count;
+          break;
+        case 3:
+          s_zhu += a.count;
+          break;
+        case 4:
+          s_xing += a.count;
+          break;
+        default:
+          break;
+      }
+    }
+    Timer(Duration(milliseconds: 500),(){
+      setState(() {
+        summary = {
+          "yi":s_yi,
+          "shi":s_shi,
+          "zhu":s_zhu,
+          "xing":s_xing
+        };
+      });
+      logger.d(summary);
+    });
+
+
+
+  }
+
 }
 
 //饼图
@@ -58,7 +136,7 @@ class PieChartSample2State extends State<PieChartSample2> {
   Widget build(BuildContext context) {
     final pieData = [
       PieData('A', 30, Colors.blue),
-      PieData('B', 20, Colors.red),
+      PieData('B', 50, Colors.red),
       PieData('C', 15, Colors.green),
       PieData('D', 35, Colors.amber),
     ];
@@ -110,18 +188,35 @@ class PieChartSample2State extends State<PieChartSample2> {
   }
 }
 
-//条形图
-class LineChartSample extends StatelessWidget {
-  // 示例数据 - 每月销售额
-  final List<Map<String, dynamic>> monthlySales = [
-    {'month': 'Jan', 'sales': 35},
-    {'month': 'Feb', 'sales': 28},
-    {'month': 'Mar', 'sales': 42},
-    {'month': 'Apr', 'sales': 50},
-    {'month': 'May', 'sales': 65},
-    {'month': 'Jun', 'sales': 80},
-  ];
+//折线图
+class LineChartSample extends StatefulWidget {
+  const LineChartSample({super.key});
 
+  @override
+  State<LineChartSample> createState() => _LineChartSampleState();
+}
+
+class _LineChartSampleState extends State<LineChartSample> {
+  List<Map<String, dynamic>> monthlySales = [
+    {'类型': '衣', 'sales': 0},
+    {'类型': '食', 'sales': 0},
+    {'类型': '住', 'sales': 0},
+    {'类型': '行', 'sales': 0},
+  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      monthlySales = [
+        {'类型': '衣', 'sales': summary["yi"]},
+        {'类型': '食', 'sales': 2.2},
+        {'类型': '住', 'sales': 3.3},
+        {'类型': '行', 'sales': 4.4},
+      ];
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -153,7 +248,7 @@ class LineChartSample extends StatelessWidget {
                   reservedSize: 22,
                   getTitlesWidget: (value, meta) {  // 替换 getTextStyles 和 getTitles
                     return Text(
-                      monthlySales[value.toInt()]['month'],
+                      monthlySales[value.toInt()]['类型'],
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontWeight: FontWeight.bold,
@@ -256,16 +351,37 @@ class LineChartSample extends StatelessWidget {
   }
 }
 
-//折线图
-class BarChartSample extends StatelessWidget {
-  // 示例数据 - 产品销量
-  final List<Map<String, dynamic>> productSales = [
-    {'product': '手机', 'sales': 65},
-    {'product': '平板', 'sales': 40},
-    {'product': '笔记本', 'sales': 75},
-    {'product': '耳机', 'sales': 35},
-    {'product': '手表', 'sales': 25},
+
+
+//条形图
+class BarChartSample extends StatefulWidget {
+  const BarChartSample({super.key});
+
+  @override
+  State<BarChartSample> createState() => _BarChartSampleState();
+}
+
+class _BarChartSampleState extends State<BarChartSample> {
+  List<Map<String, dynamic>> productSales = [
+    {'类型': '衣', 'sales': 0},
+    {'类型': '食', 'sales': 0},
+    {'类型': '住', 'sales': 0},
+    {'类型': '行', 'sales': 0},
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      productSales = [
+        {'类型': '衣', 'sales': summary["yi"]},
+        {'类型': '食', 'sales': 2.2},
+        {'类型': '住', 'sales': 3.3},
+        {'类型': '行', 'sales': 4.4},
+      ];
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -296,7 +412,7 @@ class BarChartSample extends StatelessWidget {
                   showTitles: true,
                   getTitlesWidget: (value, meta) {
                     return Text(
-                      productSales[value.toInt()]['product'],
+                      productSales[value.toInt()]['类型'],
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontWeight: FontWeight.bold,
@@ -339,7 +455,7 @@ class BarChartSample extends StatelessWidget {
                 x: entry.key, // x轴位置
                 barRods: [
                   BarChartRodData(
-                     // 条形高度
+                    // 条形高度
                     color: Colors.blueAccent, // 条形颜色
                     width: 20, // 条形宽度
                     borderRadius: const BorderRadius.only(
@@ -349,7 +465,7 @@ class BarChartSample extends StatelessWidget {
                     backDrawRodData: BackgroundBarChartRodData(
                       show: true, // 显示背景条// 背景条高度（最大可能值）
                       color: Colors.grey.withOpacity(0.15),
-                    ), toY: 100,
+                    ), toY: entry.value["sales"],
                   ),
                 ],
               );

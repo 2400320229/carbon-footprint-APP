@@ -136,17 +136,22 @@ class _UserLandingState extends State<UserLanding> {
               },
             ),
           if(!is_landing)
-            GestureDetector(
-              child: Row(
-                children: [
-                  Text("未登录",style: TextStyle(fontSize: 40,color: Color(0x67B678)),),
-                  Text("点击登录")
-                ],
+            Container(
+              width: 350,
+              height: 80,
+              child:GestureDetector(
+                child: Row(
+                  children: [
+                    Text("未登录",style: TextStyle(fontSize: 40,color: Colors.green),),
+                    Text("点击登录")
+                  ],
+                ),
+                onTap: (){
+                  Get.toNamed("/land");
+                },
               ),
-              onTap: (){
-                Get.toNamed("/land",arguments: {"value":"你点击了登录"});
-              },
             )
+
         ],
       ),
     );

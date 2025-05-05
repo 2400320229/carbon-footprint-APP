@@ -48,7 +48,6 @@ class _Category_pageState extends State<Category_page> {
         backgroundColor: Colors.green,
         message: "请输入问题",
         duration: Duration(seconds: 2),
-        
       ));
     }
   }
