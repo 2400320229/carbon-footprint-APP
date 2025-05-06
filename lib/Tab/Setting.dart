@@ -23,12 +23,15 @@ class Setting_page extends StatefulWidget {
 
 class _Setting_pageState extends State<Setting_page> {
 
+  Timer? _timer;
   bool? is_land = false;
-
+  List<PieData> pieData = [];
+  List<Map<String, dynamic>> monthlySales = [];
+  List<Map<String, dynamic>> productSales = [];
   List<Widget> land=[
-    PieChartSample2(),
-    BarChartSample(),
-    LineChartSample()
+    PieChartSample2(pieData: [],),
+    BarChartSample(productSales: [],),
+    LineChartSample(monthlySales: [],)
   ];
   List<Widget> un_land=[
     Column(
@@ -41,6 +44,12 @@ class _Setting_pageState extends State<Setting_page> {
       ],
     )
   ];
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer?.cancel();
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -64,16 +73,16 @@ class _Setting_pageState extends State<Setting_page> {
 
     final p = await SharedPreferences.getInstance();
     is_land =  p.getBool("island");
-    Timer(Duration(seconds: 1),(){
+    if (mounted) { // 检查是否仍在树中
       setState(() {
         is_land = true;
       });
-    });
+    }
     data = await nodedb.getAllCountNode();
     await analyze_data();
     logger.d(data);
   }
-  analyze_data(){
+  analyze_data() async {
     double s_yi = 0;
     double s_zhu = 0;
     double s_xing = 0;
@@ -97,19 +106,56 @@ class _Setting_pageState extends State<Setting_page> {
           break;
       }
     }
-    Timer(Duration(milliseconds: 500),(){
-      setState(() {
+    List<PieData> _pieData = [];
+    List<Map<String, dynamic>> _productSales = [];
+    List<Map<String, dynamic>> _monthlySales = [];
+    var all = s_shi+s_yi+s_xing+s_zhu;
+    _timer =Timer(Duration(milliseconds: 500),(){
         summary = {
           "yi":s_yi,
           "shi":s_shi,
           "zhu":s_zhu,
-          "xing":s_xing
+          "xing":s_xing,
+          "_yi_":s_yi/all*100,
+          "_shi_":s_shi/all*100,
+          "_zhu_":s_zhu/all*100,
+          "_xing_":s_xing/all*100,
         };
-      });
-      logger.d(summary);
+        _pieData = [
+          PieData('衣', summary["_yi_"]!, Colors.blue),
+          PieData('食', summary["_shi_"]!, Colors.red),
+          PieData('住', summary["_zhu_"]!, Colors.green),
+          PieData('行', summary["_xing_"]!, Colors.amber),
+        ];
+        _productSales = [
+          {'类型': '衣', 'sales': summary["yi"]},
+          {'类型': '食', 'sales': summary["shi"]},
+          {'类型': '住', 'sales': summary["zhu"]},
+          {'类型': '行', 'sales': summary["xing"]},
+        ];
+        _monthlySales = [
+          {'类型': '衣', 'sales': 0},
+          {'类型': '食', 'sales': 0},
+          {'类型': '住', 'sales': 0},
+          {'类型': '行', 'sales': 0},
+          {'类型': '衣', 'sales': 0},
+          {'类型': '食', 'sales': 0},
+          {'类型': '住', 'sales': 0},
+        ];
+        if (mounted) {
+          setState(() {
+            pieData = _pieData;
+            monthlySales = _monthlySales;
+            productSales = _productSales;
+            land = [ // 重新初始化 land
+              PieChartSample2(pieData: pieData),
+              BarChartSample(productSales: productSales),
+              LineChartSample(monthlySales: monthlySales),
+            ];
+          });
+        }
     });
-
-
+    logger.d(summary);
 
   }
 
@@ -125,21 +171,40 @@ class PieData {
 }
 
 class PieChartSample2 extends StatefulWidget {
+  List<PieData> pieData = [
+    PieData('A', 25, Colors.blue),
+    PieData('B', 25, Colors.red),
+    PieData('C', 25, Colors.green),
+    PieData('D', 25, Colors.amber),
+  ];
+  PieChartSample2({super.key,required this.pieData});
   @override
   State<StatefulWidget> createState() => PieChartSample2State();
 }
 
 class PieChartSample2State extends State<PieChartSample2> {
   int touchedIndex = -1;
+  List<PieData> pieData = [
+    PieData('A', 25, Colors.blue),
+    PieData('B', 25, Colors.red),
+    PieData('C', 25, Colors.green),
+    PieData('D', 25, Colors.amber),
+  ];
+  @override
+  void didUpdateWidget(covariant PieChartSample2 oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.pieData != oldWidget.pieData && mounted){
+      setState(() {
+        logger.d("2222");
+        pieData = widget.pieData;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final pieData = [
-      PieData('A', 30, Colors.blue),
-      PieData('B', 50, Colors.red),
-      PieData('C', 15, Colors.green),
-      PieData('D', 35, Colors.amber),
-    ];
+
 
     return AspectRatio(
       aspectRatio: 1.3,
@@ -190,7 +255,8 @@ class PieChartSample2State extends State<PieChartSample2> {
 
 //折线图
 class LineChartSample extends StatefulWidget {
-  const LineChartSample({super.key});
+  List<Map<String, dynamic>> monthlySales = [];
+  LineChartSample({super.key,required this.monthlySales});
 
   @override
   State<LineChartSample> createState() => _LineChartSampleState();
@@ -198,24 +264,20 @@ class LineChartSample extends StatefulWidget {
 
 class _LineChartSampleState extends State<LineChartSample> {
   List<Map<String, dynamic>> monthlySales = [
-    {'类型': '衣', 'sales': 0},
-    {'类型': '食', 'sales': 0},
-    {'类型': '住', 'sales': 0},
-    {'类型': '行', 'sales': 0},
+    {'类型': '衣', 'sales': 0.0},
+    {'类型': '食', 'sales': 0.0},
+    {'类型': '住', 'sales': 0.0},
+    {'类型': '行', 'sales': 0.0},
   ];
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    setState(() {
-      monthlySales = [
-        {'类型': '衣', 'sales': summary["yi"]},
-        {'类型': '食', 'sales': 2.2},
-        {'类型': '住', 'sales': 3.3},
-        {'类型': '行', 'sales': 4.4},
-      ];
-    });
-
+  void didUpdateWidget(covariant LineChartSample oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.monthlySales!=oldWidget.monthlySales && mounted){
+      setState(() {
+        monthlySales = widget.monthlySales;
+      });
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -355,7 +417,8 @@ class _LineChartSampleState extends State<LineChartSample> {
 
 //条形图
 class BarChartSample extends StatefulWidget {
-  const BarChartSample({super.key});
+  List<Map<String, dynamic>> productSales = [];
+  BarChartSample({super.key,required this.productSales});
 
   @override
   State<BarChartSample> createState() => _BarChartSampleState();
@@ -363,24 +426,20 @@ class BarChartSample extends StatefulWidget {
 
 class _BarChartSampleState extends State<BarChartSample> {
   List<Map<String, dynamic>> productSales = [
-    {'类型': '衣', 'sales': 0},
-    {'类型': '食', 'sales': 0},
-    {'类型': '住', 'sales': 0},
-    {'类型': '行', 'sales': 0},
+    {'类型': '衣', 'sales': 0.0},
+    {'类型': '食', 'sales': 0.0},
+    {'类型': '住', 'sales': 0.0},
+    {'类型': '行', 'sales': 0.0},
   ];
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    setState(() {
-      productSales = [
-        {'类型': '衣', 'sales': summary["yi"]},
-        {'类型': '食', 'sales': 2.2},
-        {'类型': '住', 'sales': 3.3},
-        {'类型': '行', 'sales': 4.4},
-      ];
-    });
-
+  void didUpdateWidget(covariant BarChartSample oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.productSales!=oldWidget.productSales && mounted){
+      setState(() {
+        productSales = widget.productSales;
+      });
+    }
   }
 
   @override
