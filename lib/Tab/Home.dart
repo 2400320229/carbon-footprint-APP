@@ -19,10 +19,9 @@ List<Item> item_shi_arr = [];
 List<Item> item_zhu_arr = [];
 List<Item> item_xing_arr = [];
 List<List<Item>> arr_type = [[],[],[],[]];
-Map<String,List<Item>> all_ItemList = {};
 int Select_count = 0;
-Item select_item = new Item(name:'', count:0,type: 0);
-Item add_new_item = new Item(name:'', count:0,type: 0);
+Item select_item = new Item(name:'', count:0,type: 0,sign: "");
+Item add_new_item = new Item(name:'', count:0,type: 0,sign: '');
 bool is_show_count = false;
 
 class Home_page extends StatefulWidget {
@@ -231,20 +230,20 @@ class _My_GridviewState extends State<My_Gridview> {
   init()async{
 
     List<List<Item>> arr = [[],[],[],[]];
-    Timer(Duration(seconds: 2), () {
+    Timer(Duration(milliseconds:1500), () {
       logger.d("item_yi_arr"+all_ItemList.toString());
       if(all_ItemList.isNotEmpty){
         item_yi_arr = all_ItemList["1"]!;
-        item_yi_arr.add(new Item(name: "add", count: 0, type: 0));
+        item_yi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
 
         item_shi_arr = all_ItemList["2"]!;
-        item_shi_arr.add(new Item(name: "add", count: 0, type: 0));
+        item_shi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
 
         item_zhu_arr = all_ItemList["3"]!;
-        item_zhu_arr.add(new Item(name: "add", count: 0, type: 0));
+        item_zhu_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
 
         item_xing_arr = all_ItemList["4"]!;
-        item_xing_arr.add(new Item(name: "add", count: 0, type: 0));
+        item_xing_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
         logger.d(item_yi_arr.toString()+"is_yi");
       }
       arr[0] = item_yi_arr;
@@ -303,11 +302,12 @@ class _Conpute_pageState extends State<Conpute_page> {
   var input_text = TextEditingController();
   var add_name = TextEditingController();
   var add_count = TextEditingController();
+  var add_sign = TextEditingController();
   var add_type = select_item.type;
   String result = '';
   add_item()async{
     if(add_count.text.isNotEmpty&&add_name.text.isNotEmpty){
-      add_new_item = await new Item(name: add_name.text, count: double.parse(add_count.text), type: Select_count+1);
+      add_new_item = await new Item(name: add_name.text, count: double.parse(add_count.text), type: Select_count+1,sign: add_sign.text);
       logger.d(add_new_item.name+add_new_item.type.toString());
       logger.d("double +++"+double.parse(add_count.text).toString());
       await nodedb.insert_Item(add_new_item);
@@ -355,10 +355,15 @@ class _Conpute_pageState extends State<Conpute_page> {
                       label: Text("数值"),
                       border: OutlineInputBorder()
                   ),),
+                TextField(controller: add_sign,
+                  decoration: InputDecoration(
+                      label: Text("单位"),
+                      border: OutlineInputBorder()
+                  ),),
                 Row(
                   children: [
                     ElevatedButton(onPressed: (){
-                      if(add_name.text.isNotEmpty&&add_count.text.isNotEmpty){
+                      if(add_name.text.isNotEmpty&&add_count.text.isNotEmpty&&add_sign.text.isNotEmpty){
                         add_item();
                         widget.On_show();
 

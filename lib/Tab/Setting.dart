@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Base/Item.dart';
+import 'package:flutter_try/Tab/Home.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../DataBase.dart';
@@ -106,9 +107,42 @@ class _Setting_pageState extends State<Setting_page> {
           break;
       }
     }
+    DateTime now = DateTime.now();
+    DateTime now_1 = now.subtract(Duration(days: 1));
+    DateTime now_2 = now.subtract(Duration(days: 2));
+    DateTime now_3 = now.subtract(Duration(days: 3));
+    DateTime now_4 = now.subtract(Duration(days: 4));
+    DateTime now_5 = now.subtract(Duration(days: 5));
+    DateTime now_6 = now.subtract(Duration(days: 6));
+    String date = now.toString().split(" ")[0];
+    logger.d("data:::"+date);
+    List<double> C_everday = [0,0,0,0,0,0,0];
     List<PieData> _pieData = [];
     List<Map<String, dynamic>> _productSales = [];
     List<Map<String, dynamic>> _monthlySales = [];
+    for(var a in data){
+      if(a.date.split(' ')[0] == now.toString().split(' ')[0]){
+        C_everday[0] += a.count;
+      }
+      if(a.date.split(' ')[0] == now_1.toString().split(' ')[0]){
+        C_everday[1] += a.count;
+      }
+      if(a.date.split(' ')[0] == now_2.toString().split(' ')[0]){
+        C_everday[2] += a.count;
+      }
+      if(a.date.split(' ')[0] == now_3.toString().split(' ')[0]){
+        C_everday[3] += a.count;
+      }
+      if(a.date.split(' ')[0] == now_4.toString().split(' ')[0]){
+        C_everday[4] += a.count;
+      }
+      if(a.date.split(' ')[0] == now_5.toString().split(' ')[0]){
+        C_everday[5] += a.count;
+      }
+      if(a.date.split(' ')[0] == now_6.toString().split(' ')[0]){
+        C_everday[6] += a.count;
+      }
+    }
     var all = s_shi+s_yi+s_xing+s_zhu;
     _timer =Timer(Duration(milliseconds: 500),(){
         summary = {
@@ -116,10 +150,10 @@ class _Setting_pageState extends State<Setting_page> {
           "shi":s_shi,
           "zhu":s_zhu,
           "xing":s_xing,
-          "_yi_":s_yi/all*100,
-          "_shi_":s_shi/all*100,
-          "_zhu_":s_zhu/all*100,
-          "_xing_":s_xing/all*100,
+          "_yi_":double.parse((s_yi/all*100).toStringAsFixed(2)),
+          "_shi_":double.parse((s_shi/all*100).toStringAsFixed(2)),
+          "_zhu_":double.parse((s_zhu/all*100).toStringAsFixed(2)),
+          "_xing_":double.parse((s_xing/all*100).toStringAsFixed(2)),
         };
         _pieData = [
           PieData('衣', summary["_yi_"]!, Colors.blue),
@@ -134,13 +168,34 @@ class _Setting_pageState extends State<Setting_page> {
           {'类型': '行', 'sales': summary["xing"]},
         ];
         _monthlySales = [
-          {'类型': '衣', 'sales': 0},
-          {'类型': '食', 'sales': 0},
-          {'类型': '住', 'sales': 0},
-          {'类型': '行', 'sales': 0},
-          {'类型': '衣', 'sales': 0},
-          {'类型': '食', 'sales': 0},
-          {'类型': '住', 'sales': 0},
+          {
+            '类型': now_6.toString().split(' ')[0].split("-")[1]+"-"+now_6.toString().split(' ')[0].split("-")[2],
+            'sales': C_everday[6]
+          },
+          {
+            '类型': now_5.toString().split(' ')[0].split("-")[1]+"-"+now_5.toString().split(' ')[0].split("-")[2],
+            'sales': C_everday[5]
+          },
+          {
+            '类型': now_4.toString().split(' ')[0].split("-")[1]+"-"+now_4.toString().split(' ')[0].split("-")[2],
+            'sales': C_everday[4]
+          },
+          {
+            '类型': now_3.toString().split(' ')[0].split("-")[1]+"-"+now_3.toString().split(' ')[0].split("-")[2],
+            'sales': C_everday[3]
+          },
+          {
+            '类型': now_2.toString().split(' ')[0].split("-")[1]+"-"+now_2.toString().split(' ')[0].split("-")[2],
+            'sales': C_everday[2]
+          },
+          {
+            '类型': now_1.toString().split(' ')[0].split("-")[1]+"-"+now_1.toString().split(' ')[0].split("-")[2],
+            'sales': C_everday[1]
+          },
+          {
+            '类型': now.toString().split(' ')[0].split("-")[1]+"-"+now.toString().split(' ')[0].split("-")[2],
+            'sales': C_everday[0]
+          },
         ];
         if (mounted) {
           setState(() {
@@ -235,13 +290,14 @@ class PieChartSample2State extends State<PieChartSample2> {
   List<PieChartSectionData> showingSections(List<PieData> pieData) {
     return List.generate(pieData.length, (i) {
       final isTouched = i == touchedIndex;
-      final fontSize = isTouched ? 20.0 : 16.0;
-      final radius = isTouched ? 60.0 : 50.0;
+      final fontSize = isTouched ? 16.0 : 16.0;
+      final radius = isTouched ? 70.0 : 50.0;
+      final title = isTouched ? pieData[i].value.toString()+"%":pieData[i].label;
 
       return PieChartSectionData(
         color: pieData[i].color,
         value: pieData[i].value,
-        title: '${pieData[i].value}%',
+        title: '${title}',
         radius: radius,
         titleStyle: TextStyle(
           fontSize: fontSize,
@@ -269,13 +325,21 @@ class _LineChartSampleState extends State<LineChartSample> {
     {'类型': '住', 'sales': 0.0},
     {'类型': '行', 'sales': 0.0},
   ];
+  double max_Y = 100;
   @override
   void didUpdateWidget(covariant LineChartSample oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
+    double sum = 0;
     if(widget.monthlySales!=oldWidget.monthlySales && mounted){
+
+      for(var a in widget.monthlySales){
+        logger.d(a["sales"]);
+        sum += a["sales"];
+      }
       setState(() {
         monthlySales = widget.monthlySales;
+        max_Y = sum;
       });
     }
   }
@@ -291,6 +355,7 @@ class _LineChartSampleState extends State<LineChartSample> {
             gridData: FlGridData(
               show: true,
               drawVerticalLine: true,
+              verticalInterval: 1,
               getDrawingHorizontalLine: (value) => FlLine(
                 color: Colors.grey.withOpacity(0.3),
                 strokeWidth: 1,
@@ -307,7 +372,7 @@ class _LineChartSampleState extends State<LineChartSample> {
               bottomTitles: AxisTitles(  // 替换 SideTitles
                 sideTitles: SideTitles(  // 现在 SideTitles 是 AxisTitles 的子属性
                   showTitles: true,
-                  reservedSize: 22,
+                  interval: 1,
                   getTitlesWidget: (value, meta) {  // 替换 getTextStyles 和 getTitles
                     return Text(
                       monthlySales[value.toInt()]['类型'],
@@ -320,12 +385,18 @@ class _LineChartSampleState extends State<LineChartSample> {
                   },
                 ),
               ),
+              rightTitles: AxisTitles( // 如果需要左侧也显示标签
+                sideTitles: SideTitles(showTitles: false), // 默认隐藏
+              ),
+              topTitles: AxisTitles( // 如果需要左侧也显示标签
+                sideTitles: SideTitles(showTitles: false), // 默认隐藏
+              ),
               leftTitles: AxisTitles(  // 替换 SideTitles
                 sideTitles: SideTitles(
                   showTitles: true,
                   getTitlesWidget: (value, meta) {
                     return Text(
-                      '${value.toInt()}k',
+                      '${value.toInt()}',
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontWeight: FontWeight.bold,
@@ -357,7 +428,7 @@ class _LineChartSampleState extends State<LineChartSample> {
                     entry.value['sales'].toDouble(), // y轴值
                   );
                 }).toList(),
-                isCurved: true, // 是否使用曲线
+                isCurved: false, // 是否使用曲线
                 color: Colors.blueAccent,
                 barWidth: 4, // 线宽
                 isStrokeCapRound: true, // 线头圆角
@@ -382,19 +453,18 @@ class _LineChartSampleState extends State<LineChartSample> {
             minX: 0,
             maxX: monthlySales.length.toDouble() - 1,
             minY: 0,
-            maxY: 100, // y轴最大值
-            /*lineTouchData: LineTouchData(
+            maxY: max_Y, // y轴最大值
+            lineTouchData: LineTouchData(
               enabled: true,
               touchTooltipData: LineTouchTooltipData(
                 getTooltipColor: (touchedSpot) => Colors.blueGrey, // 替代 tooltipBgColor
                 getTooltipItems: (List<LineBarSpot> touchedSpots) {
                   return touchedSpots.map((spot) {
-                    return LineTooltipItem(
-                      '${months[spot.x.toInt()]}\n',
+                    return LineTooltipItem('',
                       const TextStyle(color: Colors.white),
                       children: [
                         TextSpan(
-                          text: '销售额: ${spot.y.toInt()}k',
+                          text: '${spot.y.toInt()}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.yellow,
@@ -405,7 +475,7 @@ class _LineChartSampleState extends State<LineChartSample> {
                   }).toList();
                 },
               ),
-            ),*/
+            ),
           ),
         ),
       ),
@@ -431,13 +501,20 @@ class _BarChartSampleState extends State<BarChartSample> {
     {'类型': '住', 'sales': 0.0},
     {'类型': '行', 'sales': 0.0},
   ];
+  double max_Y = 100;
   @override
   void didUpdateWidget(covariant BarChartSample oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
+    double sum = 0;
     if(widget.productSales!=oldWidget.productSales && mounted){
+      for(var a in widget.productSales){
+        logger.d(a["sales"]);
+        sum += a["sales"];
+      }
       setState(() {
         productSales = widget.productSales;
+        max_Y = sum;
       });
     }
   }
@@ -459,7 +536,7 @@ class _BarChartSampleState extends State<BarChartSample> {
               drawVerticalLine: false, // 只显示水平网格线
               getDrawingHorizontalLine: (value) => FlLine(
                 color: Colors.grey.withOpacity(0.3),
-                strokeWidth: 1,
+                strokeWidth: 1.0,
               ),
             ),
 
@@ -481,12 +558,18 @@ class _BarChartSampleState extends State<BarChartSample> {
                   },
                 ),
               ),
+              rightTitles: AxisTitles( // 如果需要左侧也显示标签
+                sideTitles: SideTitles(showTitles: false), // 默认隐藏
+              ),
+              topTitles: AxisTitles( // 如果需要左侧也显示标签
+                sideTitles: SideTitles(showTitles: false), // 默认隐藏
+              ),
               leftTitles: AxisTitles(  // 替换 SideTitles
                 sideTitles: SideTitles(
                   showTitles: true,
                   getTitlesWidget: (value, meta) {
                     return Text(
-                      '${value.toInt()}k',
+                      '${value.toInt()}',
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontWeight: FontWeight.bold,
@@ -530,20 +613,20 @@ class _BarChartSampleState extends State<BarChartSample> {
               );
             }).toList(),
 
-            // ---- 其他配置 ----
-            maxY: 100, // y轴最大值
             barTouchData: BarTouchData(
-              enabled: true, // 启用触摸交互
-              /*touchTooltipData: BarTouchTooltipData(
-                tooltipBgColor: Colors.blueGrey,
+              enabled: true,
+              touchTooltipData: BarTouchTooltipData(
+                //tooltipBgColor: Colors.blueGrey,
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                  // 获取当前数据
+                  final item = productSales[group.x.toInt()];
                   return BarTooltipItem(
-                    '${productSales[group.x.toInt()]['product']}\n',
-                    const TextStyle(color: Colors.white),
+                    '${item['类型']}\n', // 第一行显示类型
+                    TextStyle(color: Colors.white),
                     children: [
                       TextSpan(
-                        text: '销量: ${rod.y.toInt()}k',
-                        style: const TextStyle(
+                        text: '${rod.toY.toInt()}', // 第二行显示数值
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.yellow,
                         ),
@@ -551,9 +634,15 @@ class _BarChartSampleState extends State<BarChartSample> {
                     ],
                   );
                 },
-              ),*/
+                // 其他提示框样式配置
+                tooltipPadding: EdgeInsets.all(8),
+                tooltipMargin: 10,
+                fitInsideHorizontally: true, // 避免提示框超出屏幕
+              ),
             ),
-          ),
+            // ---- 其他配置 ----
+            maxY: max_Y, // y轴最大值
+          )
         ),
       ),
     );

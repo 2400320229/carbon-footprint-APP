@@ -67,6 +67,7 @@ class _Category_pageState extends State<Category_page> {
       alignment: Alignment.center,
       child: Column(
         children: [
+          SizedBox(height: 10,),
           Container(width: double.infinity,height: 50,
           padding: EdgeInsets.all(10),
           child: Row(

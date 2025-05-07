@@ -45,6 +45,7 @@ class My_Node{
 class My_User{
   String _user_name;
   String _pass_word;
+  String? data;
   String id = '';
   My_User({required String u_n,required String p_w}):
         _pass_word = p_w,
@@ -83,40 +84,32 @@ class NodeDataBase{
     
     return await openDatabase(
       path,
-      version: 5,
+      version: 6,
       onCreate: (db,version){
         return Future.wait([
-          db.execute("CREATE TABLE nodes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,path TEXT)"),
           db.execute("CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, user_name TEXT NOT NULL,password TEXT NOT NULL)"),
-          db.execute("CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,count DOUBLE NOT NULL,type INTEGER NOT NULL)"),
+          db.execute("CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,count DOUBLE NOT NULL,type INTEGER NOT NULL,sign TEXT NOT NULL)"),
           db.execute("CREATE TABLE count_nodes(id INTEGER PRIMARY KEY AUTOINCREMENT, count DOUBLE NOT NULL,type INT NOT NULL,date TEXT NOT NULL)")
         ]);
       }
     );
   }
 
-  Future<My_Node> create(My_Node node) async {
-    final db = await instance.database;
-    await db.insert("nodes", node.toMap());
-    return node;
-  }
   Future<Item> insert_Item(Item a)async{
     final db = await instance.database;
     db.insert("items", a.toMap());
-    logger.d(a.toString()+"is_add");
-
     return a;
   }
+
   Future<CountNode> insert_CountNode(CountNode a)async{
     final db = await instance.database;
     db.insert("count_nodes", a.toMap());
-    logger.d("insert :"+a.toString());
     return a;
   }
 
   delet_CountNode()async{
     final db = await instance.database;
-
+    await db.delete('count_nodes');
   }
 
   delet_Item(String name)async {
@@ -160,22 +153,16 @@ class NodeDataBase{
     final result = await db.query("count_nodes");
     return result.map((json)=> CountNode.fromMap(json)).toList();
   }
-  Future<List<My_Node>> readAllNodes() async{
-    final db = await instance.database;
-    final result = await db.query("nodes");
-    return result.map((json)=> My_Node.fromMap(json)).toList();
-  }
 
   Future close() async {
     final db = await instance.database;
     db.close();
   }
 
-  delet(String key) async{
+
+  delet_all_CountNode()async{
     final db = await instance.database;
-    await db.delete("nodes",where: "name = ?",whereArgs: [key]);
-    //await db.execute("DELETE nodes WHERE name = ?",[key]);
-    //await db.rawDelete("DELETE nodes WHERE name = ?",[key]);//返回删除行数
+    db.delete("count_nodes");
   }
 
   Future<String>getPassWordByUserName(String key)async{

@@ -17,6 +17,7 @@ class User_page extends StatefulWidget {
 
 class _User_pageState extends State<User_page> {
   bool is_show_data = false;
+  TextEditingController ip_address = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +32,8 @@ class _User_pageState extends State<User_page> {
                 is_show_data = true;
               });
             }, child: Text('数据')),
+            TextField(controller: ip_address,),
+            ElevatedButton(onPressed: save, child: Text("保存")),
             if(is_show_data)
               Expanded(child: dataList(show: (){setState(() {
                 is_show_data = false;
@@ -40,6 +43,11 @@ class _User_pageState extends State<User_page> {
         ),
       ) 
     );
+  }
+  save()async{
+    final p = await SharedPreferences.getInstance();
+    p.setString("ip", ip_address.text);
+    logger.d(ip_address.text);
   }
 }
 class dataList extends StatefulWidget {
@@ -105,7 +113,11 @@ class _UserLandingState extends State<UserLanding> {
   }
   init()async{
     final prefs = await SharedPreferences.getInstance();
-    is_landing = (await prefs.getBool("is_land"))!;
+    var a = (await prefs.getBool("is_land"))!;
+    setState(() {
+      is_landing = a;
+    });
+
   }
   @override
   Widget build(BuildContext context) {

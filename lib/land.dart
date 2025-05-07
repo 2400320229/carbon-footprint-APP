@@ -9,6 +9,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import 'Base/Item.dart';
 import 'main.dart';
 // 发送邮箱验证码
 
@@ -26,7 +27,7 @@ class Land extends StatefulWidget {
 class _LandState extends State<Land> {
   TextEditingController pass_word = new TextEditingController();
   TextEditingController user_name = new TextEditingController();
-  TextEditingController emil = new TextEditingController();
+  TextEditingController email = new TextEditingController();
   TextEditingController code = new TextEditingController();
   bool is_success = false;
   @override
@@ -34,6 +35,7 @@ class _LandState extends State<Land> {
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +48,9 @@ class _LandState extends State<Land> {
             width: 400,
             height: 600,
             child:Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SizedBox(height: 10,),
                 Expanded(child: TextField(controller: user_name,
                   decoration: InputDecoration(
                       label: Text("用户名"),
@@ -63,7 +67,7 @@ class _LandState extends State<Land> {
                 ),
                 ),
                 SizedBox(height: 10,),
-                Expanded(child: TextField(controller: emil,
+                Expanded(child: TextField(controller: email,
                   decoration: InputDecoration(
                       label: Text("邮箱"),
                       border: OutlineInputBorder()
@@ -77,7 +81,7 @@ class _LandState extends State<Land> {
                           child:TextField(controller: code,),
                       ),
                       ElevatedButton(onPressed: (){
-                        sendCode(emil.text);
+                        sendCode(email.text);
                       }, child: Text("获取验证码"))
                     ]
                 ),
@@ -86,7 +90,7 @@ class _LandState extends State<Land> {
                   children: [
                     ElevatedButton(onPressed: (){Get.back();}, child: Text("返回")),
                     ElevatedButton(onPressed: (){
-                      //insert_user();
+                      insert_user();
                       if(is_success){Get.back();}
                       else{Get.snackbar("错误", "登录失败");}
                     }, child: Text("登录"))
@@ -100,10 +104,24 @@ class _LandState extends State<Land> {
   }
 
   insert_user()async{
+    verifyCode("", code.text);
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool("is_land", true);
+    var ip = prefs.getString("ip");
+    logger.d(ip);
+    final response = await http.post(
+      Uri.parse('http://$ip:8000/insert_user'),
+      body: jsonEncode({"name":"1001",'email': "2051824395@qq.com"}),
+      headers: {'Content-Type': 'application/json'},
+    );
+    final utf8Response = utf8.decode(response.bodyBytes);
+    print(utf8Response);
+    Get.showSnackbar(GetSnackBar(
+      backgroundColor: Colors.green,
+      message: "utf8Response",
+      duration: Duration(seconds: 1),
+    ));
     //await nodedb.insert_user(new My_User(u_n: user_name.text, p_w: pass_word.text));
-    await verifyCode(emil.text, code.text);
     is_success = true;
   }
   get_all_User()async{
@@ -165,9 +183,11 @@ class _LandState extends State<Land> {
   }
 
   Future<void> sendCode(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    var ip = prefs.getString("ip");
     final response = await http.post(
-      Uri.parse('http://0.0.0.0:8000/send-code'),
-      body: jsonEncode({'email': email}),
+      Uri.parse('http://$ip:8000/send-code'),
+      body: jsonEncode({'email': "2051874395@qq.com"}),
       headers: {'Content-Type': 'application/json'},
     );
     print(response.body);
@@ -175,9 +195,11 @@ class _LandState extends State<Land> {
 
 // 验证验证码
   Future<void> verifyCode(String email, String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    var ip = prefs.getString("ip");
     final response = await http.post(
-      Uri.parse('http://0.0.0.0:8000/verify-code'),
-      body: jsonEncode({'email': email, 'code': code}),
+      Uri.parse('http://$ip:8000/verify-code'),
+      body: jsonEncode({'email': "2051874395@qq.com", 'code': code}),
       headers: {'Content-Type': 'application/json'},
     );
     print(response.body);

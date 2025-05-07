@@ -4,7 +4,8 @@ class Item {
   double count = 0;
   String Image = '';
   int type = 0;
-  Item ({required this.name,required this.count,required this.type});
+  String sign = '';
+  Item ({required this.name,required this.count,required this.type,required this.sign});
 
   setImage(String image){
     this.Image = image;
@@ -16,12 +17,14 @@ class Item {
     return {
       "name":name,
       "count":count,
-      "type":type
+      "type":type,
+      "sign":sign
     };
   }
 
   factory Item.fromMap(Map<String,dynamic> map){
     return Item(
+      sign: map["sign"],
       type: map["type"],
         name: map["name"],
       count: map["count"]
