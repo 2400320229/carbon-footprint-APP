@@ -40,7 +40,7 @@ class _Home_pageState extends State<Home_page> {
     // TODO: implement initState
     super.initState();
     logger.d(all_ItemList);
-    init();
+    //init();
   }
 
   Future<void> _pickImage() async {
@@ -181,9 +181,6 @@ class _Home_pageState extends State<Home_page> {
         )
     );
   }
-  init()async{
-    all_ItemList = await nodedb.get_allItem();
-  }
   Future<void> sendCode(String email) async {
     /*final response = await http.post(
       Uri.parse('http://127.0.0.1:8080/send-code'),
@@ -234,16 +231,25 @@ class _My_GridviewState extends State<My_Gridview> {
       logger.d("item_yi_arr"+all_ItemList.toString());
       if(all_ItemList.isNotEmpty){
         item_yi_arr = all_ItemList["1"]!;
-        item_yi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        if(item_yi_arr[item_yi_arr.length-1].name != "add"){
+          item_yi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        }
 
         item_shi_arr = all_ItemList["2"]!;
-        item_shi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        if(item_shi_arr[item_shi_arr.length-1].name != "add"){
+          item_shi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        }
 
         item_zhu_arr = all_ItemList["3"]!;
-        item_zhu_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        if(item_zhu_arr[item_zhu_arr.length-1].name != "add"){
+          item_zhu_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        }
 
         item_xing_arr = all_ItemList["4"]!;
-        item_xing_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        if(item_xing_arr[item_xing_arr.length-1].name != "add"){
+          item_xing_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
+        }
+
         logger.d(item_yi_arr.toString()+"is_yi");
       }
       arr[0] = item_yi_arr;
@@ -277,7 +283,7 @@ class _My_GridviewState extends State<My_Gridview> {
           borderRadius: BorderRadius.circular(10),
           color:arr_type[Select_count][index].type==0?Color(0xFF8C8C8C): Colors.white,
         ),
-        child: Text(arr_type[Select_count][index].name),
+        child: Text(arr_type[Select_count][index].name.tr),
       ),
       onTap: (){
        widget.Show();
@@ -396,6 +402,7 @@ class _Conpute_pageState extends State<Conpute_page> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
+            padding: EdgeInsets.all(10),
             width: double.infinity,
             height: 300,
             decoration: BoxDecoration(
@@ -404,8 +411,22 @@ class _Conpute_pageState extends State<Conpute_page> {
             ),
             child:Column(
               children: [
-                Text(select_item.name),
-                TextField(controller: input_text,),
+                SizedBox(height: 10),
+                Text(select_item.name.tr,style: TextStyle(fontSize: 30),),
+                Row(
+                  children: [
+                    SizedBox(
+                      child: TextField(controller: input_text,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder()
+                        ),),
+                      width:200,
+                      height: 50,
+                    ),
+                    Text(select_item.sign,style: TextStyle(fontSize: 30),)
+
+                  ],
+                ),
                 Text(result),
                 Row(
                   children: [
