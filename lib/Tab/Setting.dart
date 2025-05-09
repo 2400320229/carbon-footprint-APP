@@ -155,7 +155,7 @@ class _Setting_pageState extends State<Setting_page> {
           "_zhu_":double.parse((s_zhu/all*100).toStringAsFixed(2)),
           "_xing_":double.parse((s_xing/all*100).toStringAsFixed(2)),
         };
-        _pieData =summary["_yi_"]==0&&summary["_shi_"]==0&&summary["_zhu_"]==0&&summary["_xing_"]==0? [
+        _pieData = (summary["yi"]==0 && summary["shi"]==0 && summary["zhu"]==0 && summary["xing"]==0)? [
           PieData('A', 25, Colors.blue),
           PieData('B', 25, Colors.red),
           PieData('C', 25, Colors.green),

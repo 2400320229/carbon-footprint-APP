@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter_try/Base/Item.dart';
 import 'package:flutter_try/main.dart';
 import 'package:get/get.dart';
-import 'package:flutter_try/land.dart';
+import 'package:flutter_try/Pages/land.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -283,7 +283,7 @@ class _My_GridviewState extends State<My_Gridview> {
           borderRadius: BorderRadius.circular(10),
           color:arr_type[Select_count][index].type==0?Color(0xFF8C8C8C): Colors.white,
         ),
-        child: Text(arr_type[Select_count][index].name.tr),
+        child: Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
       ),
       onTap: (){
        widget.Show();
@@ -311,6 +311,7 @@ class _Conpute_pageState extends State<Conpute_page> {
   var add_sign = TextEditingController();
   var add_type = select_item.type;
   String result = '';
+  String display_result = '';
   add_item()async{
     if(add_count.text.isNotEmpty&&add_name.text.isNotEmpty){
       add_new_item = await new Item(name: add_name.text, count: double.parse(add_count.text), type: Select_count+1,sign: add_sign.text);
@@ -414,6 +415,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                 SizedBox(height: 10),
                 Text(select_item.name.tr,style: TextStyle(fontSize: 30),),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       child: TextField(controller: input_text,
@@ -427,7 +429,10 @@ class _Conpute_pageState extends State<Conpute_page> {
 
                   ],
                 ),
-                Text(result),
+                Row(
+                  children: [Text(display_result,style: TextStyle(fontSize: 30,),maxLines: 1,)],
+                ),
+
                 Row(
                   children: [
                     ElevatedButton(onPressed: (){
@@ -435,6 +440,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                       double b = select_item.count;
                       setState(() {
                         result = (a*b).toString();
+                        display_result = "结果为："+ (double.parse(result).toStringAsFixed(2)).toString();
                       });
                       logger.d(result);
                     }, child: Text("计算")),

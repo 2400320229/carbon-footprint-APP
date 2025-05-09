@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../land.dart';
+import '../Pages/land.dart';
 
 class User_page extends StatefulWidget {
   const User_page({super.key});
@@ -34,6 +34,7 @@ class _User_pageState extends State<User_page> {
             }, child: Text('数据')),
             TextField(controller: ip_address,),
             ElevatedButton(onPressed: save, child: Text("保存")),
+            UpdateLanguage(),
             if(is_show_data)
               Expanded(child: dataList(show: (){setState(() {
                 is_show_data = false;
@@ -78,7 +79,7 @@ class _dataListState extends State<dataList> {
           children: [
             Text(NodeList[index].count.toString()),
             Text(NodeList[index].type.toString()),
-            Text(NodeList[index].date),
+            Text(NodeList[index].date.split(' ')[0]),
             ElevatedButton(onPressed: (){widget.show();}, child: Text("返回"))
           ],
         ),
@@ -144,7 +145,7 @@ class _UserLandingState extends State<UserLanding> {
                 ],
               ),
               onTap: (){
-
+                Get.toNamed("/land");
               },
             ),
           if(!is_landing)
@@ -166,6 +167,53 @@ class _UserLandingState extends State<UserLanding> {
 
         ],
       ),
+    );
+  }
+}
+
+class UpdateLanguage extends StatefulWidget {
+  const UpdateLanguage({super.key});
+
+  @override
+  State<UpdateLanguage> createState() => _UpdateLanguageState();
+}
+
+class _UpdateLanguageState extends State<UpdateLanguage> {
+
+  String language = Get.locale.toString();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    logger.d(language);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CheckboxListTile(
+          title: Text('中文'),
+          value: language == "zh_CN",
+          onChanged: (bool? newValue) {
+            setState(() {
+              Get.updateLocale(Locale("zh_CN"));
+              language = "zh_CN";
+            });
+          },
+          secondary: Icon(Icons.article), // 可选图标
+        ),
+        CheckboxListTile(
+          title: Text('English'),
+          value: language == "en_US",
+          onChanged: (bool? newValue) {
+            setState(() {
+              Get.updateLocale(Locale('en_US'));
+              language = "en_US";
+            });
+          },
+          secondary: Image.asset("images/221.png"), // 可选图标
+        )
+      ],
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_try/AIrequest/request.dart';
-import 'package:flutter_try/land.dart';
+import 'package:flutter_try/Pages/land.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

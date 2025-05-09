@@ -1,0 +1,268 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_try/Tab/Setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../DataBase.dart';
+import 'package:logger/logger.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+
+import '../Base/Item.dart';
+import '../main.dart';
+// 发送邮箱验证码
+int SendWaitTime = 10;
+
+var logger = Logger();
+
+
+class Land extends StatefulWidget {
+  const Land({super.key});
+
+  @override
+  State<Land> createState() => _LandState();
+}
+
+class _LandState extends State<Land> {
+  TextEditingController pass_word = new TextEditingController();
+  TextEditingController user_name = new TextEditingController();
+  TextEditingController email = new TextEditingController();
+  TextEditingController code = new TextEditingController();
+  bool is_success = false;
+  bool is_send = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.white,
+          alignment: Alignment.topCenter,
+          padding: EdgeInsets.all(10),
+          child:SizedBox(
+            width: 400,
+            height: 700,
+            child:Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.start,
+                children: [BackButton(onPressed: (){Get.back();},)],),
+                Container(width: double.infinity,height: 300,
+                child: Image.asset("images/221.png"),
+                ),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.only(left: 20,right: 20),
+                  height: 40,
+                  width: double.infinity,
+                  child: TextField(controller: user_name,
+                  decoration: InputDecoration(
+                      label: Text("用户名"),
+                      border: OutlineInputBorder()
+                  ),
+                ),
+                ),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.only(left: 20,right: 20),
+                  height: 40,
+                  width: double.infinity,
+                  child: TextField(controller: pass_word,
+                  decoration: InputDecoration(
+                      label: Text("密码"),
+                      border: OutlineInputBorder()
+                  ),
+                ),
+                ),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.only(left: 20,right: 20),
+                  height: 40,
+                  width: double.infinity,
+                  child: TextField(controller: email,
+                  decoration: InputDecoration(
+                      label: Text("邮箱"),
+                      border: OutlineInputBorder()
+                  ),
+                ),
+                ),
+                SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: 20),
+                        height: 40,
+                        width: 200,
+                        child:TextField(controller: code,),
+                      ),
+                      GestureDetector(
+                          onTap: (){
+                            if(is_send){
+                              Get.showSnackbar(GetSnackBar(
+                                title: "正在发送验证码",
+                                backgroundColor: Colors.green,
+                                message: "正在发送验证码",
+                                duration: Duration(seconds: 2),
+                              ));
+                            }else{
+                              if(email.text.isNotEmpty){
+                                sendCode(email.text);
+                              }else{
+                                Get.showSnackbar(GetSnackBar(
+                                  title: "请输入正确邮箱",
+                                  backgroundColor: Colors.green,
+                                  message: "请输入正确邮箱",
+                                  duration: Duration(seconds: 2),
+                                ));
+                              }
+                            }
+
+                          },
+                          child: Container(
+                            width: 140,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Colors.black26,
+                                width: 2,
+                                style: BorderStyle.solid
+                              )
+                            ),
+                            child: is_send?Text("验证码已发送"+(10-periodicSeconds).toString()):Text("获取验证码"),
+                          ))
+                    ]
+                ),
+                SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(onPressed: (){Get.toNamed("/register");},
+                        child: Text("注册"),
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(160, 50), // 设置固定尺寸
+                        side: BorderSide(
+                          color: Colors.red,      // 边框颜色
+                          width: 1.5,             // 边框宽度
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // 圆角
+                        ),
+                        elevation: 4,             // 阴影高度
+                        backgroundColor: Colors.white, // 背景色
+                        foregroundColor: Colors.red,   // 文字颜色
+                      ),),
+                    SizedBox(width: 10,),
+                    ElevatedButton(onPressed: (){
+                     // insert_user();
+                      verifyCode(email.text,code.text);
+                      if(is_success){Get.back();}
+                      else{Get.snackbar("错误", "登录失败");}
+                    }, child: Text("登录"),
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(160, 50), // 设置固定尺寸
+                        side: BorderSide(
+                          color: Colors.red,      // 边框颜色
+                          width: 1.5,             // 边框宽度
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // 圆角
+                        ),
+                        elevation: 4,             // 阴影高度
+                        backgroundColor: Colors.white, // 背景色
+                        foregroundColor: Colors.red,   // 文字颜色
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          )
+        )
+      );
+  }
+
+  insert_user()async{
+    verifyCode("", code.text);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("is_land", true);
+    var ip = prefs.getString("ip");
+    logger.d(ip);
+    final response = await http.post(
+      Uri.parse('http://$ip:8000/insert_user'),
+      body: jsonEncode({"name":"1001",'email': "2051824395@qq.com"}),
+      headers: {'Content-Type': 'application/json'},
+    );
+    final utf8Response = utf8.decode(response.bodyBytes);
+    print(utf8Response);
+    Get.showSnackbar(GetSnackBar(
+      backgroundColor: Colors.green,
+      message: "utf8Response",
+      duration: Duration(seconds: 1),
+    ));
+    //await nodedb.insert_user(new My_User(u_n: user_name.text, p_w: pass_word.text));
+    is_success = true;
+  }
+
+  Future<void> sendCode(String email) async {
+    setState(() {
+      periodicSeconds = 0;
+      is_send = true;
+    });
+    start();
+    final prefs = await SharedPreferences.getInstance();
+    var ip = prefs.getString("ip");
+    final response = await http.post(
+      Uri.parse('http://$ip:8000/send-code'),
+      body: jsonEncode({'email': email}),
+      headers: {'Content-Type': 'application/json'},
+    );
+    print(response.statusCode);
+    prefs.setInt("send_time", 10);
+  }
+  int periodicSeconds = 0;
+  Timer? periodicTimer;
+
+  void start() {
+    periodicTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if(periodicSeconds == SendWaitTime){
+        setState(() {
+          is_send = false;
+        });
+        return;
+      }
+      setState(() {
+        periodicSeconds++;
+      });
+    });
+  }
+// 验证验证码
+  Future<void> verifyCode(String email, String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    var ip = prefs.getString("ip");
+    final response = await http.post(
+      Uri.parse('http://$ip:8000/verify-code'),
+      body: jsonEncode({'email': email, 'code': code}),
+      headers: {'Content-Type': 'application/json'},
+    );
+    print(response.body);
+    print(response.statusCode);
+    if(response.statusCode==200){
+      is_success = true;
+    }else{
+
+    }
+    Get.snackbar("code", response.body);
+  }
+}
+//politeness
