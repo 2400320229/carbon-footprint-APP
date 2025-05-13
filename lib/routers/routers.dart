@@ -2,7 +2,7 @@
 import 'package:flutter_try/Pages/register.dart';
 import 'package:get/get.dart';
 import '../Pages/land.dart';
-import '../main.dart';
+import '../Pages/main.dart';
 
 class AppPage{
   static final routers = [

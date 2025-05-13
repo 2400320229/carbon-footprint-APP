@@ -10,7 +10,7 @@ import 'package:flutter_try/routers/routers.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'DataBase.dart';
+import '../DataBase.dart';
 
 Map<String,List<Item>> all_ItemList = {};
 

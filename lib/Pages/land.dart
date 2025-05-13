@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import '../Base/Item.dart';
-import '../main.dart';
+import 'main.dart';
 // 发送邮箱验证码
 int SendWaitTime = 10;
 
@@ -49,7 +49,7 @@ class _LandState extends State<Land> {
           padding: EdgeInsets.all(10),
           child:SizedBox(
             width: 400,
-            height: 700,
+            height: double.infinity,
             child:Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -83,86 +83,11 @@ class _LandState extends State<Land> {
                 ),
                 ),
                 SizedBox(height: 10,),
-                Container(
-                  padding: EdgeInsets.only(left: 20,right: 20),
-                  height: 40,
-                  width: double.infinity,
-                  child: TextField(controller: email,
-                  decoration: InputDecoration(
-                      label: Text("邮箱"),
-                      border: OutlineInputBorder()
-                  ),
-                ),
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(left: 20),
-                        height: 40,
-                        width: 200,
-                        child:TextField(controller: code,),
-                      ),
-                      GestureDetector(
-                          onTap: (){
-                            if(is_send){
-                              Get.showSnackbar(GetSnackBar(
-                                title: "正在发送验证码",
-                                backgroundColor: Colors.green,
-                                message: "正在发送验证码",
-                                duration: Duration(seconds: 2),
-                              ));
-                            }else{
-                              if(email.text.isNotEmpty){
-                                sendCode(email.text);
-                              }else{
-                                Get.showSnackbar(GetSnackBar(
-                                  title: "请输入正确邮箱",
-                                  backgroundColor: Colors.green,
-                                  message: "请输入正确邮箱",
-                                  duration: Duration(seconds: 2),
-                                ));
-                              }
-                            }
-
-                          },
-                          child: Container(
-                            width: 140,
-                            height: 40,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.black26,
-                                width: 2,
-                                style: BorderStyle.solid
-                              )
-                            ),
-                            child: is_send?Text("验证码已发送"+(10-periodicSeconds).toString()):Text("获取验证码"),
-                          ))
-                    ]
-                ),
-                SizedBox(height: 10,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ElevatedButton(onPressed: (){Get.toNamed("/register");},
-                        child: Text("注册"),
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(160, 50), // 设置固定尺寸
-                        side: BorderSide(
-                          color: Colors.red,      // 边框颜色
-                          width: 1.5,             // 边框宽度
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // 圆角
-                        ),
-                        elevation: 4,             // 阴影高度
-                        backgroundColor: Colors.white, // 背景色
-                        foregroundColor: Colors.red,   // 文字颜色
-                      ),),
-                    SizedBox(width: 10,),
+
+
                     ElevatedButton(onPressed: (){
                      // insert_user();
                       verifyCode(email.text,code.text);
@@ -170,9 +95,9 @@ class _LandState extends State<Land> {
                       else{Get.snackbar("错误", "登录失败");}
                     }, child: Text("登录"),
                       style: ElevatedButton.styleFrom(
-                        fixedSize: Size(160, 50), // 设置固定尺寸
+                        fixedSize: Size(220, double.infinity), // 设置固定尺寸
                         side: BorderSide(
-                          color: Colors.red,      // 边框颜色
+                          color: Color(0xFF728873),      // 边框颜色
                           width: 1.5,             // 边框宽度
                         ),
                         shape: RoundedRectangleBorder(
@@ -180,9 +105,24 @@ class _LandState extends State<Land> {
                         ),
                         elevation: 4,             // 阴影高度
                         backgroundColor: Colors.white, // 背景色
-                        foregroundColor: Colors.red,   // 文字颜色
+                        foregroundColor: Color(0xFF728873),   // 文字颜色
                       ),
-                    )
+                    ),
+                    ElevatedButton(onPressed: (){Get.toNamed("/register");},
+                      child: Text("注册"),
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(100, double.infinity), // 设置固定尺寸
+                        side: BorderSide(
+                          color: Color(0xFF728873),      // 边框颜色
+                          width: 1.5,             // 边框宽度
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // 圆角
+                        ),
+                        elevation: 4,             // 阴影高度
+                        backgroundColor: Colors.white, // 背景色
+                        foregroundColor: Color(0xFF728873),   // 文字颜色
+                      ),),
                   ],
                 )
               ],

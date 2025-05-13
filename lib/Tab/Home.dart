@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter_try/Base/Item.dart';
-import 'package:flutter_try/main.dart';
+import 'package:flutter_try/Pages/main.dart';
 import 'package:get/get.dart';
 import 'package:flutter_try/Pages/land.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
@@ -12,13 +12,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../language/language.dart';
+
 
 
 List<Item> item_yi_arr = [];
 List<Item> item_shi_arr = [];
 List<Item> item_zhu_arr = [];
 List<Item> item_xing_arr = [];
-List<List<Item>> arr_type = [[],[],[],[]];
+List<List<Item>> arr_type = List_o_data;
 int Select_count = 0;
 Item select_item = new Item(name:'', count:0,type: 0,sign: "");
 Item add_new_item = new Item(name:'', count:0,type: 0,sign: '');
@@ -226,8 +228,8 @@ class _My_GridviewState extends State<My_Gridview> {
   }
   init()async{
 
-    List<List<Item>> arr = [[],[],[],[]];
-    Timer(Duration(milliseconds:1500), () {
+    List<List<Item>> arr = List_o_data;
+    Timer(Duration(milliseconds:2000), () {
       logger.d("item_yi_arr"+all_ItemList.toString());
       if(all_ItemList.isNotEmpty){
         item_yi_arr = all_ItemList["1"]!;
@@ -268,22 +270,29 @@ class _My_GridviewState extends State<My_Gridview> {
   Widget build(context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 4,
+      crossAxisCount: 3,
           crossAxisSpacing: 10, // 水平间距
           mainAxisSpacing: 10,  // 垂直间距
-          childAspectRatio: 1.0 // 子项宽高比
+          childAspectRatio: 1.5 // 子项宽高比
 
     ),
     itemCount:arr_type[Select_count].length,
     itemBuilder: (context,index){
     return GestureDetector(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.only(top: 10),
         decoration:BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color:arr_type[Select_count][index].type==0?Color(0xFF8C8C8C): Colors.white,
         ),
-        child: Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
+        child: Column(
+          children:arr_type[Select_count][index].name=="add"?[
+            Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
+          ]: [
+            Image.asset("images/"+arr_type[Select_count][index].name+".png",width: double.infinity,height: 35,fit: BoxFit.cover,),
+            Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
+          ],
+        )
       ),
       onTap: (){
        widget.Show();

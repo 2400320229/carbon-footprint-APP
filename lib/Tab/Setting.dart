@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../DataBase.dart';
 import 'package:logger/logger.dart';
-import '../main.dart';
+import '../Pages/main.dart';
 
 var logger = Logger();
 List<CountNode> data = [];
@@ -30,6 +30,7 @@ class _Setting_pageState extends State<Setting_page> {
   List<Map<String, dynamic>> monthlySales = [];
   List<Map<String, dynamic>> productSales = [];
   List<Widget> land=[
+    Text("总共产生碳足迹:"),
     PieChartSample2(pieData: [],),
     BarChartSample(productSales: [],),
     LineChartSample(monthlySales: [],)
@@ -146,6 +147,7 @@ class _Setting_pageState extends State<Setting_page> {
     var all = s_shi+s_yi+s_xing+s_zhu;
     _timer =Timer(Duration(milliseconds: 500),(){
         summary = {
+          "sum":s_shi+s_xing+s_zhu+s_yi,
           "yi":s_yi,
           "shi":s_shi,
           "zhu":s_zhu,
@@ -208,7 +210,8 @@ class _Setting_pageState extends State<Setting_page> {
             pieData = _pieData;
             monthlySales = _monthlySales;
             productSales = _productSales;
-            land = [ // 重新初始化 land
+            land = [
+              Text("总共产生碳足迹:"+summary["sum"]!.toString()),// 重新初始化 land
               PieChartSample2(pieData: pieData),
               BarChartSample(productSales: productSales),
               LineChartSample(monthlySales: monthlySales),
