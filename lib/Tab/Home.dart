@@ -289,7 +289,7 @@ class _My_GridviewState extends State<My_Gridview> {
           children:arr_type[Select_count][index].name=="add"?[
             Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
           ]: [
-            Image.asset("images/"+arr_type[Select_count][index].name+".png",width: double.infinity,height: 35,fit: BoxFit.cover,),
+            Image.asset("images/"+arr_type[Select_count][index].name+".png",width: double.infinity,height: 40,fit: BoxFit.cover,),
             Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
           ],
         )

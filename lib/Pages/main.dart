@@ -4,7 +4,6 @@ import 'package:flutter_try/Tab/Category.dart';
 import 'package:flutter_try/Tab/Setting.dart';
 import 'package:flutter_try/Tab/Home.dart';
 import 'package:flutter_try/Tab/User.dart';
-
 import 'package:flutter_try/language/language.dart';
 import 'package:flutter_try/routers/routers.dart';
 import 'package:get/get.dart';
@@ -54,7 +53,7 @@ class _MyAppState extends State<MyApp> {
       defaultTransition: Transition.rightToLeftWithFade,
       getPages: AppPage.routers,
         home: Scaffold(
-      body: Page[currentIndex],
+      body:MyList(MenuItemList: ["111_11",'222_22','333_33']), //Page[currentIndex],
 
       bottomNavigationBar: BottomNavigationBar(
 
@@ -89,6 +88,33 @@ class _MyAppState extends State<MyApp> {
     for(Item a in List_data){
       nodedb.insert_Item(a);
     }
+  }
+}
+
+class MyList extends StatefulWidget {
+  List<String> MenuItemList = [];
+  MyList({super.key,required this.MenuItemList});
+
+  @override
+  State<MyList> createState() => _MyListState();
+}
+
+class _MyListState extends State<MyList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: widget.MenuItemList.length,
+        itemBuilder: (BuildContext contex,index){
+          return ListTile(
+            title: Row(
+              children: [
+                Text(widget.MenuItemList[index].split('_')[0]),
+                SizedBox(width: 10,),
+                Text(widget.MenuItemList[index].split('_')[1]+"\$"),
+              ],
+            ),
+          );
+        });
   }
 }
 

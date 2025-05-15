@@ -72,7 +72,7 @@ class _dataListState extends State<dataList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(itemCount: NodeList.length,
-        itemBuilder: (BuildContext contex,index){
+        itemBuilder: (BuildContext context,index){
       return ListTile(
         title: Row(
 
