@@ -59,8 +59,9 @@ class _Home_pageState extends State<Home_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFF728873),
+        backgroundColor: Color(0x4FF3F3F3),
         appBar: AppBar(
+          title: Text("碳足迹计算器"),
           bottom:PreferredSize(
             preferredSize: const Size.fromHeight(kBottomNavigationBarHeight),
             child: BottomNavigationBar(
@@ -91,31 +92,6 @@ class _Home_pageState extends State<Home_page> {
                 });
               },
             ),
-
-
-            /*actions: [
-          ElevatedButton(onPressed: (){
-            setState(() {
-              Select_count = 0;
-            });
-          }, child: Text("衣")),
-          ElevatedButton(onPressed: (){
-            setState(() {
-              Select_count = 1;
-            });
-          }, child: Text("食")),
-          ElevatedButton(onPressed: (){
-            setState(() {
-              Select_count = 2;
-            });
-          }, child: Text("住")),
-          ElevatedButton(onPressed: (){
-            setState(() {
-              Select_count = 3;
-            });
-          }, child: Text("行"))
-
-        ],*/
           ),
         ),
         body: Stack(
@@ -129,41 +105,8 @@ class _Home_pageState extends State<Home_page> {
                       setState(() {
                         is_show_count = true;
                       });
-
                     },key: childKey,)),
-
                   ]
-
-
-                /*if (_selectedImage != null)
-              Image.file(
-                _selectedImage!,
-                height: 200,
-              ),
-            SizedBox(
-              child: Text(_recognizedText),
-              width: 100,
-              height: 100,
-            ),
-            ElevatedButton(onPressed: ()=>{
-              _pickImage()
-            }, child: Text("选择照片")),
-            ElevatedButton(onPressed: (){
-              *//*Navigator.push(context,
-            MaterialPageRoute(builder: (context)=>const Land())
-            );*//*
-              //Get.toNamed("/land",arguments: {"value":"你点击了登录"});
-              sendCode("2051874395@qq.com");
-            }, child: Text('登录')),
-            ElevatedButton(onPressed: (){
-              var locale = Locale("zh","CN");
-              Get.updateLocale(locale);
-            }, child: Text('CN')),
-            ElevatedButton(onPressed: (){
-              var locale = Locale("en","US");
-              Get.snackbar("en", "US",backgroundColor: Colors.green);
-              Get.updateLocale(locale);
-            }, child: Text('US'))*/
               ),
             ),
             if(is_show_count)
@@ -183,32 +126,7 @@ class _Home_pageState extends State<Home_page> {
         )
     );
   }
-  Future<void> sendCode(String email) async {
-    /*final response = await http.post(
-      Uri.parse('http://127.0.0.1:8080/send-code'),
-      body: jsonEncode({'email': email}),
-      headers: {'Content-Type': 'application/json'},
-    );*/
-    var address = await getLocalIPAddresses();
-    var address1 = address[0];
-    final response = await http.get(Uri.parse("http://10.33.120.2:8080/send-code?email=$email"));
-    print(response.body);
-  }
-  Future<List<String>> getLocalIPAddresses() async {
-    List<String> ipAddresses = [];
-    try {
-      for (var interface in await NetworkInterface.list()) {
-        for (var addr in interface.addresses) {
-          if (addr.type.name == 'IPv4') {
-            ipAddresses.add(addr.address);
-          }
-        }
-      }
-    } catch (e) {
-      print('获取 IP 地址时出错: $e');
-    }
-    return ipAddresses;
-  }
+
 }
 class My_Gridview extends StatefulWidget {
   final VoidCallback Show;
@@ -273,7 +191,7 @@ class _My_GridviewState extends State<My_Gridview> {
       crossAxisCount: 3,
           crossAxisSpacing: 10, // 水平间距
           mainAxisSpacing: 10,  // 垂直间距
-          childAspectRatio: 1.5 // 子项宽高比
+          childAspectRatio: 1.33 // 子项宽高比
 
     ),
     itemCount:arr_type[Select_count].length,
@@ -283,14 +201,25 @@ class _My_GridviewState extends State<My_Gridview> {
         padding: EdgeInsets.only(top: 10),
         decoration:BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color:arr_type[Select_count][index].type==0?Color(0xFF8C8C8C): Colors.white,
+          color:arr_type[Select_count][index].type==0?Color(0x918C8C8C): Colors.white,
         ),
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children:arr_type[Select_count][index].name=="add"?[
-            Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
+            Icon(Icons.add,size:40,color: Colors.white,),
           ]: [
-            Image.asset("images/"+arr_type[Select_count][index].name+".png",width: double.infinity,height: 40,fit: BoxFit.cover,),
-            Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
+            Container(
+              width:50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), // 所有角都是圆角
+                ),
+              child:arr_type[Select_count][index].name.contains("+")?Text(""):
+              Image.asset("images/"+arr_type[Select_count][index].name+".png",width: 50,height: 50,fit:BoxFit.cover,)
+            ),
+            Expanded(
+              child: Text(arr_type[Select_count][index].name.tr,style: TextStyle(fontSize: 10),),
+            ),
+
           ],
         )
       ),
@@ -323,7 +252,7 @@ class _Conpute_pageState extends State<Conpute_page> {
   String display_result = '';
   add_item()async{
     if(add_count.text.isNotEmpty&&add_name.text.isNotEmpty){
-      add_new_item = await new Item(name: add_name.text, count: double.parse(add_count.text), type: Select_count+1,sign: add_sign.text);
+      add_new_item = await new Item(name: "+"+add_name.text, count: double.parse(add_count.text), type: Select_count+1,sign: add_sign.text);
       logger.d(add_new_item.name+add_new_item.type.toString());
       logger.d("double +++"+double.parse(add_count.text).toString());
       await nodedb.insert_Item(add_new_item);
@@ -352,6 +281,7 @@ class _Conpute_pageState extends State<Conpute_page> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
+            padding: EdgeInsets.all(10),
             width: double.infinity,
             height: 300,
             decoration: BoxDecoration(
@@ -361,32 +291,46 @@ class _Conpute_pageState extends State<Conpute_page> {
             child:Column(
               children: [
                 Text(select_item.name),
-                TextField(controller: add_name,
-                decoration: InputDecoration(
-                  label: Text("名字"),
-                  border: OutlineInputBorder()
-                ),),
-                TextField(controller: add_count,
-                  decoration: InputDecoration(
-                      label: Text("数值"),
-                      border: OutlineInputBorder()
-                  ),),
-                TextField(controller: add_sign,
-                  decoration: InputDecoration(
-                      label: Text("单位"),
-                      border: OutlineInputBorder()
-                  ),),
+                SizedBox(height: 5,),
+                Container(
+                  height: 50,
+                  width: 300,
+                  child: TextField(controller: add_name,
+                    decoration: InputDecoration(
+                        label: Text("名字"),
+                        border: OutlineInputBorder()
+                    ),),
+                ),
+                SizedBox(height: 5,),
+                Container(
+                  height: 50,
+                  width: 300,
+                  child: TextField(controller: add_count,
+                    decoration: InputDecoration(
+                        label: Text("数值"),
+                        border: OutlineInputBorder()
+                    ),),
+                ),
+                SizedBox(height: 5,),
+                Container(
+                    height: 50,
+                    width: 300,
+                    child: TextField(controller: add_sign,
+                      decoration: InputDecoration(
+                          label: Text("单位"),
+                          border: OutlineInputBorder()
+                      ),)
+                )
+                ,
                 Row(
                   children: [
                     ElevatedButton(onPressed: (){
                       if(add_name.text.isNotEmpty&&add_count.text.isNotEmpty&&add_sign.text.isNotEmpty){
                         add_item();
                         widget.On_show();
-
                       }else{
-                        Get.snackbar("请输入数据", "");
+                        Get.snackbar("请输入数据", "",backgroundColor: Colors.green);
                       }
-
                     }, child: Text("添加")),
                     ElevatedButton(onPressed: (){
                       widget.On_show();

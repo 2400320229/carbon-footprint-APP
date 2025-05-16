@@ -41,6 +41,7 @@ class _LandState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Container(
             width: double.infinity,
             height: double.infinity,
@@ -51,7 +52,6 @@ class _LandState extends State<Register> {
               width: 400,
               height: double.infinity,
               child:Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(mainAxisAlignment: MainAxisAlignment.start,
                     children: [BackButton(onPressed: (){Get.back();},)],),

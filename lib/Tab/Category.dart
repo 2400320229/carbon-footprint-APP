@@ -64,6 +64,7 @@ class _Category_pageState extends State<Category_page> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       alignment: Alignment.center,
       child: Column(
         children: [
@@ -73,6 +74,7 @@ class _Category_pageState extends State<Category_page> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              SizedBox(height: 10,),
             Text("DeepSeek",style: TextStyle(fontSize: 20),),
             ElevatedButton(onPressed: (){clean();}, child: Text("新对话"))
           ],),),
@@ -93,7 +95,9 @@ class _Category_pageState extends State<Category_page> {
                 Container(
                   width: 50,
                   height: 50,
-                  child: waiting(),
+                  child: ElevatedButton(onPressed:(){
+                    Get.snackbar("writ", "正在思考中，请耐心等待",backgroundColor: Colors.green);
+                  } , child: Text("等待中"))
                   ),
               if(!is_waiting)
                 ElevatedButton(onPressed:(){chat();} , child: Text("chat")),
@@ -139,7 +143,9 @@ class _Chat_ListState extends State<Chat_List> {
               alignment: Alignment.center,
               width: (chatHistory[index]["content"]!.length)*15+5<200?
               (chatHistory[index]["content"]!.length)*15+5 : 200,
-              child: Text(chatHistory[index]["content"].toString()),
+              child: Text(chatHistory[index]["content"].toString(),style: TextStyle(
+                fontSize: 15
+              ),),
             ),
             SizedBox(width: 10,),
             Column(
@@ -148,21 +154,39 @@ class _Chat_ListState extends State<Chat_List> {
             )
           ]:[
             Container(
-                alignment: Alignment.topCenter,
-              width: 50,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [Image.asset("images/221.png")],
-              )
-            ),
-            SizedBox(width: 10,),
-            Container(
-              decoration: BoxDecoration(
-                color: Color(0xA6A6A6),
+              height:chatHistory[index]['content']!.length*2+0.1>80?chatHistory[index]['content']!.length*2+15.1:80,
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                          alignment: Alignment.topCenter,
+                          width: 50,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [Image.asset("images/221.png")],
+                          )
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 10,),
+                  Column(
+                    children: [
+                      Container(
+                        padding:EdgeInsets.all(10),
+                        height:chatHistory[index]['content']!.length*2+0.1>80?chatHistory[index]['content']!.length*2+15.1:80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color:Color(0x5EAEAEAE),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        width: 250,
+                        child: Expanded(child: Text(chatHistory[index]["content"].toString())),
+                      ),
+                    ],
+                  )
+                ],
               ),
-              alignment: Alignment.centerLeft,
-              width: 250,
-              child: Text(chatHistory[index]["content"].toString()),
             ),
           ],
         )
@@ -235,8 +259,8 @@ class _waitingState extends State<waiting> with SingleTickerProviderStateMixin{
     return RotationTransition(
       turns: _animation,
       child: Container(
-        width: 50,
-        height: 50,
+        width: 10,
+        height: 10,
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.blue,
