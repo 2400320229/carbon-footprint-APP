@@ -67,8 +67,8 @@ class _MyAppState extends State<MyApp> {
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home),label: "计算"),
-            BottomNavigationBarItem(icon: Icon(Icons.category),label: "统计"),
-            BottomNavigationBarItem(icon: Icon(Icons.settings),label: "AI"),
+            BottomNavigationBarItem(icon: ImageIcon(AssetImage('images/icons/question.png')),label: "AI"),
+            BottomNavigationBarItem(icon: ImageIcon(AssetImage('images/icons/summery.png')),label: "统计"),
             BottomNavigationBarItem(icon: Icon(Icons.person),label: "用户")
           ]),
     ));

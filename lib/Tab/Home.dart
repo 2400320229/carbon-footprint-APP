@@ -67,7 +67,7 @@ class _Home_pageState extends State<Home_page> {
             child: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.account_balance_wallet),
+                  icon: ImageIcon(AssetImage("images/icons/cloth.png")),
                   label: '衣',
                 ),
                 BottomNavigationBarItem(

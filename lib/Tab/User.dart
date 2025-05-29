@@ -17,39 +17,144 @@ class User_page extends StatefulWidget {
 
 class _User_pageState extends State<User_page> {
   bool is_show_data = false;
-  TextEditingController ip_address = new TextEditingController();
+  bool is_show_language = false;
+  bool is_show_IP = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            SizedBox(height: 50,),
-            UserLanding(),
-            ElevatedButton(onPressed: (){
-              setState(() {
-                is_show_data = true;
-              });
-            }, child: Text('数据')),
-            TextField(controller: ip_address,),
-            ElevatedButton(onPressed: save, child: Text("保存")),
-            UpdateLanguage(),
-            if(is_show_data)
-              Expanded(child: dataList(show: (){setState(() {
-                is_show_data = false;
-              });})
-              )
-          ],
-        ),
-      ) 
+        body:Stack(
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 10,right: 0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 50,),
+                    UserLanding(),
+                    Column(
+                      children: [
+                        SizedBox(height: 20,),
+                        Container(
+                          child: ElevatedButton(onPressed: (){
+                            print("is click");
+                            setState(() {
+                              is_show_data = true;
+                            });
+                          }, child: Row(children: [Text("数据"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(300, 60), // 设置固定尺寸
+                              side: BorderSide(
+                                color: Color(0xFF728873),      // 边框颜色
+                                width: 1.5,             // 边框宽度
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8), // 圆角
+                              ),
+                              elevation: 4,             // 阴影高度
+                              backgroundColor: Colors.white, // 背景色
+                              foregroundColor: Color(0xFF728873),   // 文字颜色
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 5,),
+                        Container(
+                          child: ElevatedButton(onPressed: (){
+                            print("is click");
+                            setState(() {
+                              is_show_language = true;
+                            });
+                          }, child:Row(children: [Text("语言"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(300, 60), // 设置固定尺寸
+                              side: BorderSide(
+                                color: Color(0xFF728873),      // 边框颜色
+                                width: 1.5,             // 边框宽度
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8), // 圆角
+                              ),
+                              elevation: 4,             // 阴影高度
+                              backgroundColor: Colors.white, // 背景色
+                              foregroundColor: Color(0xFF728873),   // 文字颜色
+                            ),),
+                        ),
+                        SizedBox(height: 5,),
+                        Container(
+                          child: ElevatedButton(onPressed: (){
+                            print("is click");
+                            setState(() {
+                              is_show_IP = true;
+                            });
+                          }, child:Row(children: [Text("IP地址"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(300, 60), // 设置固定尺寸
+                              side: BorderSide(
+                                color: Color(0xFF728873),      // 边框颜色
+                                width: 1.5,             // 边框宽度
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8), // 圆角
+                              ),
+                              elevation: 4,             // 阴影高度
+                              backgroundColor: Colors.white, // 背景色
+                              foregroundColor: Color(0xFF728873),   // 文字颜色
+                            ),),
+                        ),
+                      ],
+                    ),
+
+
+                  ],
+                ),
+              ),
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 300),
+                right: is_show_data ? 0 : -440, // 从左(0)移动到右(200)
+                child: Container(
+                  padding: EdgeInsets.only(left: 60,right: 0,top: 10,bottom: 10),
+                  color: Colors.white,
+                  width: 440,
+                  height: 800,
+                  child:dataList(show: (){setState(() {
+                    is_show_data = false;
+                  });})
+                )
+              ),
+              AnimatedPositioned(
+                  duration: Duration(milliseconds: 300),
+                  right: is_show_language ? 0 : -440, // 从左(0)移动到右(200)
+                  child: Container(
+                    padding:EdgeInsets.only(left: 60,right: 0,top: 10,bottom: 10),
+                    color: Colors.white,
+                    width: 440,
+                    height: 800,
+                    child:UpdateLanguage(show: (){
+                      setState(() {
+                        is_show_language = false;
+                      });
+                    },),
+                  )
+              ),
+              AnimatedPositioned(
+                  duration: Duration(milliseconds: 300),
+                  right: is_show_IP ? 0 : -440, // 从左(0)移动到右(200)
+                  child: Container(
+                    padding:EdgeInsets.only(left: 60,right: 0,top: 10,bottom: 10),
+                    color: Colors.white,
+                    width: 440,
+                    height: 800,
+                    child:updateIp(show: (){
+                      setState(() {
+                        is_show_IP = false;
+                      });
+                    },),
+                  )
+              ),
+            ]
+        )
     );
   }
-  save()async{
-    final p = await SharedPreferences.getInstance();
-    p.setString("ip", ip_address.text);
-    logger.d(ip_address.text);
-  }
+
 }
 class dataList extends StatefulWidget {
   VoidCallback show;
@@ -71,20 +176,25 @@ class _dataListState extends State<dataList> {
   }
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemCount: NodeList.length,
-        itemBuilder: (BuildContext context,index){
-      return ListTile(
-        title: Row(
-
-          children: [
-            Text(NodeList[index].count.toString()),
-            Text(NodeList[index].type.toString()),
-            Text(NodeList[index].date.split(' ')[0]),
-            ElevatedButton(onPressed: (){widget.show();}, child: Text("返回"))
-          ],
-        ),
-      );
-    });
+    return Column(
+      children: [
+        Row(children: [SizedBox(width: 10,),IconButton(onPressed: widget.show, icon: ImageIcon(AssetImage("images/icons/back.png")))],),
+        Container(width: double.infinity,height: 2,color: Color(0xFF728873)),
+        Expanded(child:ListView.builder(itemCount: NodeList.length,
+            itemBuilder: (BuildContext context,index){
+              return ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text("产生:"+NodeList[index].count.toString()),
+                    Text("类型:"+NodeList[index].type.toString()),
+                    Text("时间:"+NodeList[index].date.split(' ')[0]),
+                  ],
+                ),
+              );
+            }) )
+      ],
+    );
   }
   init()async{
     var a = await nodedb.getAllCountNode();
@@ -96,7 +206,8 @@ class _dataListState extends State<dataList> {
 }
 
 class UserLanding extends StatefulWidget {
-  const UserLanding({super.key});
+
+  UserLanding({super.key});
 
   @override
   State<UserLanding> createState() => _UserLandingState();
@@ -107,7 +218,6 @@ class _UserLandingState extends State<UserLanding> {
   bool is_landing = false;
   @override
   void initState() {
-
     // TODO: implement initState
     super.initState();
     init();
@@ -123,7 +233,7 @@ class _UserLandingState extends State<UserLanding> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      width: 370,
       height: 100,
       alignment: Alignment.center,
       decoration: BoxDecoration(borderRadius:BorderRadius.circular(10),
@@ -172,7 +282,8 @@ class _UserLandingState extends State<UserLanding> {
 }
 
 class UpdateLanguage extends StatefulWidget {
-  const UpdateLanguage({super.key});
+  VoidCallback show;
+  UpdateLanguage({super.key,required this.show});
 
   @override
   State<UpdateLanguage> createState() => _UpdateLanguageState();
@@ -191,6 +302,8 @@ class _UpdateLanguageState extends State<UpdateLanguage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Row(children: [SizedBox(width: 10,),IconButton(onPressed: widget.show, icon: ImageIcon(AssetImage("images/icons/back.png")))],),
+        Container(width: double.infinity,height: 2,color: Color(0xFF728873)),
         CheckboxListTile(
           title: Text('中文'),
           value: language == "zh_CN",
@@ -212,8 +325,50 @@ class _UpdateLanguageState extends State<UpdateLanguage> {
             });
           },
           secondary: Image.asset("images/221.png"), // 可选图标
-        )
+        ),
+        ElevatedButton(onPressed: widget.show, child: Text("返回"))
       ],
     );
+  }
+}
+
+class TextList extends StatelessWidget {
+  const TextList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        Column()
+
+      ],
+    );
+  }
+}
+class updateIp extends StatefulWidget {
+  VoidCallback show;
+  updateIp({super.key,required this.show});
+
+  @override
+  State<updateIp> createState() => _updateIpState();
+}
+
+class _updateIpState extends State<updateIp> {
+  TextEditingController ip_address = new TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(children: [SizedBox(width: 10,),IconButton(onPressed: widget.show, icon: ImageIcon(AssetImage("images/icons/back.png")))],),
+        Container(width: double.infinity,height: 2,color: Color(0xFF728873)),
+        TextField(controller: ip_address,),
+        ElevatedButton(onPressed: save, child: Text("保存")),
+      ],
+    );
+  }
+  save()async{
+    final p = await SharedPreferences.getInstance();
+    p.setString("ip", ip_address.text);
+    logger.d(ip_address.text);
   }
 }
