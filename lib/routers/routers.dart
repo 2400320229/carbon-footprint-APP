@@ -1,4 +1,5 @@
 
+import 'package:flutter_try/Pages/Detail.dart';
 import 'package:flutter_try/Pages/register.dart';
 import 'package:get/get.dart';
 import '../Pages/land.dart';
@@ -9,5 +10,6 @@ class AppPage{
     GetPage(name: "/", page: () => MyApp()),
     GetPage(name: "/land", page: () => Land()),
     GetPage(name: "/register", page: () => Register()),
+    GetPage(name: "/DetailPage", page: () => DetailPage()),
   ];
 }

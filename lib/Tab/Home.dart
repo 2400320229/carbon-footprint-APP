@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_try/Base/Item.dart';
 import 'package:flutter_try/Pages/main.dart';
 import 'package:get/get.dart';
@@ -13,8 +15,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../language/language.dart';
-
-
 
 List<Item> item_yi_arr = [];
 List<Item> item_shi_arr = [];
@@ -41,7 +41,7 @@ class _Home_pageState extends State<Home_page> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    logger.d(all_ItemList);
+    //logger.d(all_ItemList);
     //init();
   }
 
@@ -142,48 +142,82 @@ class _My_GridviewState extends State<My_Gridview> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    arr_type = List_o_data;
+    logger.d("${arr_type}");
     init();
   }
-  init()async{
+  Future<void> init() async {
+    logger.d("init");
 
-    List<List<Item>> arr = List_o_data;
-    Timer(Duration(milliseconds:2000), () {
-      logger.d("item_yi_arr"+all_ItemList.toString());
-      if(all_ItemList.isNotEmpty){
-        item_yi_arr = all_ItemList["1"]!;
-        if(item_yi_arr[item_yi_arr.length-1].name != "add"){
-          item_yi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
-        }
+    var list  = await nodedb.get_allItem();
+    final jsonData = {
+      '1': list["1"]!.map((e) => e.toJson()).toList(),
+      '2': list["2"]!.map((e) => e.toJson()).toList(),
+      '3': list["3"]!.map((e) => e.toJson()).toList(),
+      '4': list["4"]!.map((e) => e.toJson()).toList(),
+    };
 
-        item_shi_arr = all_ItemList["2"]!;
-        if(item_shi_arr[item_shi_arr.length-1].name != "add"){
-          item_shi_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
-        }
+// 调用compute
+    final jsonResult = await compute(processData, jsonData);
 
-        item_zhu_arr = all_ItemList["3"]!;
-        if(item_zhu_arr[item_zhu_arr.length-1].name != "add"){
-          item_zhu_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
-        }
+// 结果转换
+    final result = jsonResult.map((list) =>
+        list.map((e) => Item.fromJson(e)).toList()
+    ).toList();
 
-        item_xing_arr = all_ItemList["4"]!;
-        if(item_xing_arr[item_xing_arr.length-1].name != "add"){
-          item_xing_arr.add(new Item(name: "add", count: 0, type: 0,sign: ""));
-        }
-
-        logger.d(item_yi_arr.toString()+"is_yi");
-      }
-      arr[0] = item_yi_arr;
-      arr[1] = item_shi_arr;
-      arr[2] = item_zhu_arr;
-      arr[3] = item_xing_arr;
-      setState(() {
-        arr_type = arr;
-        logger.d(arr_type);
-      });
+    //final result = await compute(processData, all_ItemList);
+    setState(() {
+      arr_type = result;
+      logger.d("数据处理完成: ${arr_type.length}");
+      logger.d("数据处理完成: ${arr_type}" +"${result}");
     });
-
-
   }
+
+  static Future<List<List<Map<String, dynamic>>>> processData(Map<String, List<Map<String, dynamic>>> jsonData) async {
+    // 转换输入数据
+    final allItemList = jsonData.map((key, value) =>
+        MapEntry(key, value.map((e) => Item.fromJson(e)).toList())
+    );
+    logger.d("compute111"+"${allItemList}");
+    // 调用实际处理逻辑
+    final result = await _processItemData(allItemList);
+    logger.d("compute222"+"${result}");
+    // 转换输出数据
+    return result.map((list) =>
+        list.map((item) => item.toJson()).toList()
+    ).toList();
+  }
+
+// 实际处理逻辑，保持原有代码不变
+  static Future<List<List<Item>>> _processItemData(Map<String, List<Item>> allItemList) async {
+    logger.d("开始处理数据，allItemList: ${allItemList.length}个条目");
+
+    List<Item> item_yi_arr = allItemList["1"] ?? [];
+    List<Item> item_shi_arr = allItemList["2"] ?? [];
+    List<Item> item_zhu_arr = allItemList["3"] ?? [];
+    List<Item> item_xing_arr = allItemList["4"] ?? [];
+
+    if (item_yi_arr.isNotEmpty && item_yi_arr.last.name != "add") {
+      item_yi_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+    }
+
+    if (item_shi_arr.isNotEmpty && item_shi_arr.last.name != "add") {
+      item_shi_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+    }
+
+    if (item_zhu_arr.isNotEmpty && item_zhu_arr.last.name != "add") {
+      item_zhu_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+    }
+
+    if (item_xing_arr.isNotEmpty && item_xing_arr.last.name != "add") {
+      item_xing_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+    }
+
+    logger.d("数据处理完成");
+
+    return [item_yi_arr, item_shi_arr, item_zhu_arr, item_xing_arr];
+  }
+
   @override
   Widget build(context) {
     return GridView.builder(

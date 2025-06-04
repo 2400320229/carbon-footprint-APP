@@ -28,10 +28,6 @@ class Land extends StatefulWidget {
 class _LandState extends State<Land> {
   TextEditingController pass_word = new TextEditingController();
   TextEditingController user_name = new TextEditingController();
-  TextEditingController email = new TextEditingController();
-  TextEditingController code = new TextEditingController();
-  bool is_success = false;
-  bool is_send = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -90,10 +86,9 @@ class _LandState extends State<Land> {
 
 
                     ElevatedButton(onPressed: (){
-                     // insert_user();
-                      verifyCode(email.text,code.text);
-                      if(is_success){Get.back();}
-                      else{Get.snackbar("错误", "登录失败");}
+                      if(pass_word.text.isNotEmpty&&user_name.text.isNotEmpty){
+                        land();
+                      }
                     }, child: Text("登录"),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(220, double.infinity), // 设置固定尺寸
@@ -132,78 +127,25 @@ class _LandState extends State<Land> {
         )
       );
   }
-
-  insert_user()async{
-    verifyCode("", code.text);
+  land()async{
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool("is_land", true);
+
     var ip = prefs.getString("ip");
     logger.d(ip);
     final response = await http.post(
-      Uri.parse('http://$ip:8000/insert_user'),
-      body: jsonEncode({"name":"1001",'email': "2051824395@qq.com"}),
+      Uri.parse('http://$ip:8000/land'),
+      body: jsonEncode({"name":user_name.text,'password':pass_word.text }),
       headers: {'Content-Type': 'application/json'},
     );
-    final utf8Response = utf8.decode(response.bodyBytes);
-    print(utf8Response);
-    Get.showSnackbar(GetSnackBar(
-      backgroundColor: Colors.green,
-      message: "utf8Response",
-      duration: Duration(seconds: 1),
-    ));
-    //await nodedb.insert_user(new My_User(u_n: user_name.text, p_w: pass_word.text));
-    is_success = true;
-  }
-
-  Future<void> sendCode(String email) async {
-    setState(() {
-      periodicSeconds = 0;
-      is_send = true;
-    });
-    start();
-    final prefs = await SharedPreferences.getInstance();
-    var ip = prefs.getString("ip");
-    final response = await http.post(
-      Uri.parse('http://$ip:8000/send-code'),
-      body: jsonEncode({'email': email}),
-      headers: {'Content-Type': 'application/json'},
-    );
-    print(response.statusCode);
-    prefs.setInt("send_time", 10);
-  }
-  int periodicSeconds = 0;
-  Timer? periodicTimer;
-
-  void start() {
-    periodicTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if(periodicSeconds == SendWaitTime){
-        setState(() {
-          is_send = false;
-        });
-        return;
-      }
-      setState(() {
-        periodicSeconds++;
-      });
-    });
-  }
-// 验证验证码
-  Future<void> verifyCode(String email, String code) async {
-    final prefs = await SharedPreferences.getInstance();
-    var ip = prefs.getString("ip");
-    final response = await http.post(
-      Uri.parse('http://$ip:8000/verify-code'),
-      body: jsonEncode({'email': email, 'code': code}),
-      headers: {'Content-Type': 'application/json'},
-    );
-    print(response.body);
-    print(response.statusCode);
-    if(response.statusCode==200){
-      is_success = true;
+    logger.d(response.statusCode);
+    if(response.statusCode == 200){
+      prefs.setBool("is_land", true);
+      Get.snackbar("登陆成功", "登陆成功");
+      Get.toNamed("/");
     }else{
-
+      Get.snackbar("登陆失败", "用户名或验证码错误");
     }
-    Get.snackbar("code", response.body);
   }
+
 }
 //politeness

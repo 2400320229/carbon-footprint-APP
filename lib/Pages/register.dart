@@ -56,7 +56,7 @@ class _LandState extends State<Register> {
                   Row(mainAxisAlignment: MainAxisAlignment.start,
                     children: [BackButton(onPressed: (){Get.back();},)],),
                   Container(width: double.infinity,height: 300,
-                    child: Image.asset("images/221.png"),
+                    child: Image.asset("images/221.png"),//logo
                   ),
                   SizedBox(height: 10,),
                   Container(
@@ -125,7 +125,6 @@ class _LandState extends State<Register> {
                                   ));
                                 }
                               }
-
                             },
                             child: Container(
                               width: 140,
@@ -163,10 +162,13 @@ class _LandState extends State<Register> {
                           foregroundColor: Color(0xFF728873),   // 文字颜色
                         ),),
                       ElevatedButton(onPressed: (){
+                        if(user_name.text.isNotEmpty&&email.text.isNotEmpty&&pass_word.text.isNotEmpty){
+                          insert_user();
+                        }else{
+                          Get.snackbar("请输入信息", "请输入信息");
+                        }
                         // insert_user();
-                        verifyCode(email.text,code.text);
-                        if(is_success){Get.back();}
-                        else{Get.snackbar("错误", "登录失败");}
+
                       }, child: Text("注册"),
                         style: ElevatedButton.styleFrom(
                           fixedSize: Size(160, 50), // 设置固定尺寸
@@ -192,25 +194,31 @@ class _LandState extends State<Register> {
   }
 
   insert_user()async{
-    verifyCode("", code.text);
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool("is_land", true);
-    var ip = prefs.getString("ip");
-    logger.d(ip);
-    final response = await http.post(
-      Uri.parse('http://$ip:8000/insert_user'),
-      body: jsonEncode({"name":"1001",'email': "2051824395@qq.com"}),
-      headers: {'Content-Type': 'application/json'},
-    );
-    final utf8Response = utf8.decode(response.bodyBytes);
-    print(utf8Response);
-    Get.showSnackbar(GetSnackBar(
-      backgroundColor: Colors.green,
-      message: "utf8Response",
-      duration: Duration(seconds: 1),
-    ));
-    //await nodedb.insert_user(new My_User(u_n: user_name.text, p_w: pass_word.text));
-    is_success = true;
+    await verifyCode(email.text,code.text);
+    if(is_success){
+      final prefs = await SharedPreferences.getInstance();
+      var ip = prefs.getString("ip");
+      logger.d(ip);
+      final response = await http.post(
+        Uri.parse('http://$ip:8000/insert_user'),
+        body: jsonEncode({"name":user_name.text,"password":pass_word.text,'email': email.text}),
+        headers: {'Content-Type': 'application/json'},
+      );
+      print(response.statusCode);
+      if(response.statusCode==200){
+        final utf8Response = utf8.decode(response.bodyBytes);
+        print(utf8Response);
+        Get.showSnackbar(GetSnackBar(
+          backgroundColor: Colors.green,
+          message: "注册成功",
+          duration: Duration(seconds: 1),
+        ));
+        Get.back();
+      }else{
+        Get.snackbar("错误", "注册失败");
+      }
+    }
+    else{Get.snackbar("错误", "注册失败");}
   }
 
   Future<void> sendCode(String email) async {
@@ -257,9 +265,11 @@ class _LandState extends State<Register> {
     print(response.body);
     print(response.statusCode);
     if(response.statusCode==200){
+      Get.snackbar("验证成功",'验证成功');
       is_success = true;
     }else{
-
+      Get.snackbar("验证码错误",'验证码错误');
+      is_success = true;
     }
     Get.snackbar("code", response.body);
   }

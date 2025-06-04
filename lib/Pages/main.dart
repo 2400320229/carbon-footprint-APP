@@ -15,7 +15,10 @@ Map<String,List<Item>> all_ItemList = {};
 
 final nodedb = NodeDataBase.instance;
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  Future.delayed(Duration.zero, () async {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -27,6 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
 
   int currentIndex=0;
   List<Widget>Page=[
@@ -68,12 +72,13 @@ class _MyAppState extends State<MyApp> {
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home),label: "计算"),
             BottomNavigationBarItem(icon: ImageIcon(AssetImage('images/icons/question.png')),label: "AI"),
-            BottomNavigationBarItem(icon: ImageIcon(AssetImage('images/icons/summery.png')),label: "统计"),
+            BottomNavigationBarItem(icon: ImageIcon(AssetImage('images/icons/Summery.png')),label: "统计"),
             BottomNavigationBarItem(icon: Icon(Icons.person),label: "用户")
           ]),
     ));
   }
   void init_app()async{
+    logger.d("welcome!");
     final prefs = await SharedPreferences.getInstance();
     bool? is_load = await prefs.getBool("is_load");
     if(is_load != true){

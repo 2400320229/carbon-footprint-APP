@@ -30,6 +30,23 @@ class Item {
       count: map["count"]
     );
   }
+
+  // 添加序列化方法
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'count': count,
+    'type': type,
+    'sign': sign,
+  };
+
+  // 添加反序列化方法
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
+    name: json['name'],
+    count: json['count'],
+    type: json['type'],
+    sign: json['sign'],
+  );
+
 }
 //计算数据
 class CountNode{
