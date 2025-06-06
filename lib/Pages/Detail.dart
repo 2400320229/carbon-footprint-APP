@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Pages/land.dart';
+import 'package:flutter_try/model/String.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,7 +38,7 @@ class _DetailPageState extends State<DetailPage> {
       });
     }else if(args == "4"){
       setState(() {
-        page = dataList();
+        page = TextList();
       });
     }
   }
@@ -162,7 +163,14 @@ class TextList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        Column()
+        Column(
+          children: [
+            Text("——、软件背景"),
+            Text(in_background),
+            Text("二、软件用途"),
+            Text(in_use)
+          ],
+        ),
 
       ],
     );

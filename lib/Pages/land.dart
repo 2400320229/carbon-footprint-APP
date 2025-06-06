@@ -1,12 +1,9 @@
-import 'dart:async';
+
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_try/Tab/Setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../DataBase.dart';
 import 'package:logger/logger.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -142,7 +139,7 @@ class _LandState extends State<Land> {
       prefs.setBool("is_land", true);
       Get.snackbar("登陆成功", "登陆成功");
       Get.toNamed("/");
-    }else{
+    }else {
       Get.snackbar("登陆失败", "用户名或验证码错误");
     }
   }

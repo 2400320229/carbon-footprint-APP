@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Tab/Setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../DataBase.dart';
+import '../model/DataBase.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
@@ -262,14 +262,20 @@ class _LandState extends State<Register> {
       body: jsonEncode({'email': email, 'code': code}),
       headers: {'Content-Type': 'application/json'},
     );
-    print(response.body);
+    //print(response.body);
     print(response.statusCode);
     if(response.statusCode==200){
       Get.snackbar("验证成功",'验证成功');
       is_success = true;
     }else{
-      Get.snackbar("验证码错误",'验证码错误');
-      is_success = true;
+      if(response.statusCode==401){
+        print(response.statusCode);
+        Get.snackbar("邮箱已注册",'邮箱已注册，请更换邮箱');
+        is_success = false;
+      }else{
+        Get.snackbar("验证码错误",'验证码错误');
+        is_success = false;
+      }
     }
     Get.snackbar("code", response.body);
   }

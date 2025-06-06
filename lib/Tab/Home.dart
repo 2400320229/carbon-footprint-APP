@@ -1,20 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
-import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_try/Base/Item.dart';
 import 'package:flutter_try/Pages/main.dart';
 import 'package:get/get.dart';
 import 'package:flutter_try/Pages/land.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
-import '../language/language.dart';
+import '../model/String.dart';
 
 List<Item> item_yi_arr = [];
 List<Item> item_shi_arr = [];

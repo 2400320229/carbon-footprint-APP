@@ -75,6 +75,25 @@ class _User_pageState extends State<User_page> {
                         SizedBox(height: 5,),
                         Container(
                           child: ElevatedButton(onPressed: (){
+                            Get.toNamed("/DetailPage",arguments: "4");
+                          }, child:Row(children: [Text("关于"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(300, 60), // 设置固定尺寸
+                              side: BorderSide(
+                                color: Color(0xFF728873),      // 边框颜色
+                                width: 1.5,             // 边框宽度
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8), // 圆角
+                              ),
+                              elevation: 4,             // 阴影高度
+                              backgroundColor: Colors.white, // 背景色
+                              foregroundColor: Color(0xFF728873),   // 文字颜色
+                            ),),
+                        ),
+                        SizedBox(height: 5,),
+                        Container(
+                          child: ElevatedButton(onPressed: (){
                             Get.toNamed("/DetailPage",arguments: "3");
                           }, child:Row(children: [Text("IP地址"),ImageIcon(AssetImage("images/icons/goto.png"))],),
                             style: ElevatedButton.styleFrom(
@@ -91,6 +110,7 @@ class _User_pageState extends State<User_page> {
                               foregroundColor: Color(0xFF728873),   // 文字颜色
                             ),),
                         ),
+
                       ],
                     ),
                   ],

@@ -7,7 +7,7 @@ import 'package:flutter_try/Base/Item.dart';
 import 'package:flutter_try/Tab/Home.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../DataBase.dart';
+import '../model/DataBase.dart';
 import 'package:logger/logger.dart';
 import '../Pages/main.dart';
 
