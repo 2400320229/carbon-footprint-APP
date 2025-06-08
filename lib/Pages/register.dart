@@ -30,8 +30,10 @@ class _LandState extends State<Register> {
   TextEditingController user_name = new TextEditingController();
   TextEditingController email = new TextEditingController();
   TextEditingController code = new TextEditingController();
+  TextEditingController image = new TextEditingController();
   bool is_success = false;
   bool is_send = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -201,7 +203,7 @@ class _LandState extends State<Register> {
       logger.d(ip);
       final response = await http.post(
         Uri.parse('http://$ip:8000/insert_user'),
-        body: jsonEncode({"name":user_name.text,"password":pass_word.text,'email': email.text}),
+        body: jsonEncode({"name":user_name.text,"password":pass_word.text,'email': email.text,"image":image.text.isNotEmpty?image.text:"0"}),
         headers: {'Content-Type': 'application/json'},
       );
       print(response.statusCode);

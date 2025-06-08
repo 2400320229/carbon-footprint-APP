@@ -67,7 +67,15 @@ class _Setting_pageState extends State<Setting_page> {
     height: double.infinity,
     child:Column(
         mainAxisAlignment: MainAxisAlignment.center,
-      children: is_land==true?land:un_land
+      children:[Expanded(child: ListView(
+        children: [
+          ListTile(
+            title:Column(
+              children:land ,
+            ),
+          )
+        ],
+      ))]
     )
     );
   }

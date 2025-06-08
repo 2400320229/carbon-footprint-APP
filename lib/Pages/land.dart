@@ -59,7 +59,7 @@ class _LandState extends State<Land> {
                   width: double.infinity,
                   child: TextField(controller: user_name,
                   decoration: InputDecoration(
-                      label: Text("用户名"),
+                      label: Text("邮箱"),
                       border: OutlineInputBorder()
                   ),
                 ),
@@ -80,8 +80,6 @@ class _LandState extends State<Land> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-
-
                     ElevatedButton(onPressed: (){
                       if(pass_word.text.isNotEmpty&&user_name.text.isNotEmpty){
                         land();
@@ -131,16 +129,17 @@ class _LandState extends State<Land> {
     logger.d(ip);
     final response = await http.post(
       Uri.parse('http://$ip:8000/land'),
-      body: jsonEncode({"name":user_name.text,'password':pass_word.text }),
+      body: jsonEncode({"email":user_name.text,'password':pass_word.text }),
       headers: {'Content-Type': 'application/json'},
     );
     logger.d(response.statusCode);
     if(response.statusCode == 200){
       prefs.setBool("is_land", true);
+      prefs.setString("user_email", user_name.text);
       Get.snackbar("登陆成功", "登陆成功");
       Get.toNamed("/");
     }else {
-      Get.snackbar("登陆失败", "用户名或验证码错误");
+      Get.snackbar("登陆失败", "邮箱或密码错误");
     }
   }
 

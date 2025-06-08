@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_try/Base/Item.dart';
 import 'package:flutter_try/Pages/main.dart';
 import 'package:get/get.dart';
 import 'package:flutter_try/Pages/land.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/String.dart';
 
 List<Item> item_yi_arr = [];
@@ -108,6 +111,7 @@ class _Home_pageState extends State<Home_page> {
                   setState(() {
                     is_show_count = false;
                   });
+
                 },
                 is_add: (){
                   setState(() {
@@ -119,6 +123,7 @@ class _Home_pageState extends State<Home_page> {
         )
     );
   }
+
 
 }
 class My_Gridview extends StatefulWidget {
@@ -291,6 +296,8 @@ class _Conpute_pageState extends State<Conpute_page> {
     DateTime now = DateTime.now();
     var a = new CountNode(count: double.parse(result), type: Select_count+1, date: now.toString());
     await nodedb.insert_CountNode(a);
+    widget.On_show;
+    sava_data();
   }
   @override
   Widget build(BuildContext context) {
@@ -435,5 +442,28 @@ class _Conpute_pageState extends State<Conpute_page> {
         )
       ],
     );
+  }
+  sava_data()async{
+    DateTime now = DateTime.now();
+    final prefs = await SharedPreferences.getInstance();
+    var ip = await prefs.getString("ip");
+    var email = await prefs.getString("user_email");
+    logger.d(ip.toString()+email.toString());
+    if(ip != ''&& email != ''){
+      var newData = "|"+result+"?"+(Select_count+1).toString()+"?"+now.toString();
+      logger.d(newData);
+      await http.post(
+        Uri.parse("http://$ip:8000/update_data"),
+        body:jsonEncode({"email":email,"data":newData.toString()}),
+        headers: {'Content-Type': 'application/json'}
+      );
+    }
+    else{
+      Get.snackbar("数据不完整", "请登录或输入ip地址");
+    }
+
+  }
+  setUserData()async{
+
   }
 }

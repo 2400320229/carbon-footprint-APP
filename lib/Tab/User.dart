@@ -110,60 +110,65 @@ class _User_pageState extends State<User_page> {
                               foregroundColor: Color(0xFF728873),   // 文字颜色
                             ),),
                         ),
-
+                        SizedBox(height: 5,),
+                        Container(
+                          child: ElevatedButton(onPressed: (){
+                            _showInputDialog(context);
+                          }, child:Row(children: [Text("退出登录"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(300, 60), // 设置固定尺寸
+                              side: BorderSide(
+                                color: Color(0xFF728873),      // 边框颜色
+                                width: 1.5,             // 边框宽度
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8), // 圆角
+                              ),
+                              elevation: 4,             // 阴影高度
+                              backgroundColor: Colors.white, // 背景色
+                              foregroundColor: Color(0xFF728873),   // 文字颜色
+                            ),),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
-              /*AnimatedPositioned(
-                duration: Duration(milliseconds: 300),
-                right: is_show_data ? 0 : -440, // 从左(0)移动到右(200)
-                child: Container(
-                  padding: EdgeInsets.only(left: 60,right: 0,top: 10,bottom: 10),
-                  color: Colors.white,
-                  width: 440,
-                  height: 800,
-                  child:dataList(show: (){setState(() {
-                    is_show_data = false;
-                  });})
-                )
-              ),
-              AnimatedPositioned(
-                  duration: Duration(milliseconds: 300),
-                  right: is_show_language ? 0 : -440, // 从左(0)移动到右(200)
-                  child: Container(
-                    padding:EdgeInsets.only(left: 60,right: 0,top: 10,bottom: 10),
-                    color: Colors.white,
-                    width: 440,
-                    height: 800,
-                    child:UpdateLanguage(show: (){
-                      setState(() {
-                        is_show_language = false;
-                      });
-                    },),
-                  )
-              ),
-              AnimatedPositioned(
-                  duration: Duration(milliseconds: 300),
-                  right: is_show_IP ? 0 : -440, // 从左(0)移动到右(200)
-                  child: Container(
-                    padding:EdgeInsets.only(left: 60,right: 0,top: 10,bottom: 10),
-                    color: Colors.white,
-                    width: 440,
-                    height: 800,
-                    child:updateIp(show: (){
-                      setState(() {
-                        is_show_IP = false;
-                      });
-                    },),
-                  )
-              ),*/
             ]
         )
     );
   }
-
+  Future<void> _showInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('确定要退出登录吗？'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                exit();
+                Navigator.of(context).pop();
+                Get.toNamed("/land");
+              },
+              child: Text('确认'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  exit()async{
+    final prefs = await SharedPreferences.getInstance();
+   await prefs.setBool("is_land",false);
+    await prefs.setString("user_email",'');
+  }
 }
 class UserLanding extends StatefulWidget {
 
@@ -215,7 +220,7 @@ class _UserLandingState extends State<UserLanding> {
                 ],
               ),
               onTap: (){
-                Get.toNamed("/land");
+
               },
             ),
           if(!is_landing)
