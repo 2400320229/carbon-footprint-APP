@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
   List<Widget>Page=[
     Home_page(),
     Category_page(),
-    Setting_page(),
+    DataPage(),
     User_page()
   ];
   @override
