@@ -354,9 +354,10 @@ class _Conpute_pageState extends State<Conpute_page> {
                           label: Text("单位"),
                           border: OutlineInputBorder()
                       ),)
-                )
-                ,
+                ),
+                SizedBox(height: 5,),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(onPressed: (){
                       if(add_name.text.isNotEmpty&&add_count.text.isNotEmpty&&add_sign.text.isNotEmpty){
@@ -365,10 +366,36 @@ class _Conpute_pageState extends State<Conpute_page> {
                       }else{
                         Get.snackbar("请输入数据", "",backgroundColor: Colors.green);
                       }
-                    }, child: Text("添加")),
+                    }, child: Text("添加"),
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(100, 50),
+                      side: BorderSide(
+                        color: Color(0xFF728873),
+                        width: 1.5,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 4,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Color(0xFF728873),
+                    ),),
                     ElevatedButton(onPressed: (){
                       widget.On_show();
-                      }, child: Text("保存")),
+                      }, child: Text("保存"),
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(100, 50),
+                        side: BorderSide(
+                          color: Color(0xFF728873),
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        elevation: 4,
+                        backgroundColor: Colors.white,
+                        foregroundColor: Color(0xFF728873),
+                      ),),
                   ],
                 )
               ],
@@ -419,8 +446,9 @@ class _Conpute_pageState extends State<Conpute_page> {
                 Row(
                   children: [Text(display_result,style: TextStyle(fontSize: 30,),maxLines: 1,)],
                 ),
-
+                SizedBox(height: 5,),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(onPressed: (){
                       double a = double.parse(input_text.text);
@@ -430,10 +458,37 @@ class _Conpute_pageState extends State<Conpute_page> {
                         display_result = "结果为："+ (double.parse(result).toStringAsFixed(2)).toString();
                       });
                       logger.d(result);
-                    }, child: Text("计算")),
+                    }, child: Text("计算"),
+                      style: ElevatedButton.styleFrom(
+                      fixedSize: Size(100, 50),
+                      side: BorderSide(
+                        color: Color(0xFF728873),
+                        width: 1.5,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 4,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Color(0xFF728873),
+                    ),
+                    ),
                     ElevatedButton(onPressed: (){
                       add_conut_node();
-                    }, child: Text("保存")),
+                    }, child: Text("保存"),
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(100, 50),
+                        side: BorderSide(
+                          color: Color(0xFF728873),
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        elevation: 4,
+                        backgroundColor: Colors.white,
+                        foregroundColor: Color(0xFF728873),
+                      ),),
                   ],
                 )
               ],

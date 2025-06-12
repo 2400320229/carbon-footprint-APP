@@ -47,6 +47,10 @@ class _DetailPageState extends State<DetailPage> {
       setState(() {
         page = UserList();
       });
+    } else if(args == "6"){
+      setState(() {
+        page = UpdatePassword();
+      });
     }
   }
   @override
@@ -249,6 +253,7 @@ class _UserListState extends State<UserList> {
 
     // 检查必要参数
     if (ip.isEmpty || email.isEmpty) {
+      Get.snackbar("错误", "缺少必要参数: IP或邮箱为空");
       logger.e("缺少必要参数: IP或邮箱为空");
       return;
     }
@@ -277,7 +282,18 @@ class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
     return  Column(
-      children: [
+      children: !is_land ?
+      [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("请登录",style: TextStyle(fontSize: 50),),
+            ElevatedButton(onPressed: (){
+              Get.toNamed("/land");
+            }, child: Text("去登录"))
+          ],
+        )
+      ]:[
         Row(
           children: [
             SizedBox(width: 10,),
@@ -367,5 +383,151 @@ class _UserCardState extends State<UserCard> {
         ],
       ),
     );
+  }
+}
+
+class UpdatePassword extends StatefulWidget {
+  const UpdatePassword({super.key});
+
+  @override
+  State<UpdatePassword> createState() => _UpdatePasswordState();
+}
+
+class _UpdatePasswordState extends State<UpdatePassword> {
+  String ip = '';
+  bool is_land = false;
+  TextEditingController old_password = new TextEditingController();
+  TextEditingController email = new TextEditingController();
+  TextEditingController new_password = new TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+  init()async{
+    final p = await SharedPreferences.getInstance();
+    var aa = await p.getBool("is_land") ?? false; // 添加默认值
+    setState(() {
+      is_land = aa;
+    });
+    ip = await p.getString("ip") ?? "localhost"; // 添加默认值
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Column(
+      children:!is_land ? [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("请登录",style: TextStyle(fontSize: 50),),
+            ElevatedButton(onPressed: (){
+              Get.toNamed("/land");
+            }, child: Text("去登录"))
+          ],
+        )
+      ]:[
+        Row(
+          children: [
+            SizedBox(width: 10,),
+            IconButton(
+                onPressed: (){Get.back();},
+                icon: ImageIcon(AssetImage("images/icons/back.png"))
+            )],
+        ),
+        Text("更改密码",style: TextStyle(
+            fontSize: 30
+        ),),
+        Container(
+          child:Column(
+            children: [
+              Container(
+                height: 50,
+                width: 300,
+                child:TextField(
+                  controller: email,
+                  decoration: InputDecoration(
+                    label: Text("邮箱"),
+                    border: OutlineInputBorder()
+                ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 50,
+                width: 300,
+                child: TextField(
+                  controller: old_password,
+                  decoration: InputDecoration(
+                      label: Text("原密码"),
+                      border: OutlineInputBorder()
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 50,
+                width: 300,
+                child:TextField(
+                  controller: new_password,
+                  decoration: InputDecoration(
+                      label: Text("新密码"),
+                      border: OutlineInputBorder()
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                child: ElevatedButton(onPressed: (){
+                  if(email.text.isNotEmpty && old_password.text.isNotEmpty && new_password.text.isNotEmpty){
+                    update_password();
+                  }
+                }, child: Text("更改密码"),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(150, double.infinity),
+                  side: BorderSide(
+                    color: Color(0xFF728873),
+                    width: 1.5
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 4,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Color(0xFF728873),
+                ),),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+  update_password()async{
+    final response = await http.post(
+      Uri.parse('http://$ip:8000/update_password'),
+      body: jsonEncode({"email":email.text,"old_password":old_password.text,"new_password":new_password.text}),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if(response.statusCode == 200){
+      Get.snackbar("更改成功", '更改成功');
+      Get.back();
+    }else if(response.statusCode == 401){
+      Get.snackbar("更改失败", '邮箱未注册');
+    }
+    else if(response.statusCode == 402){
+      Get.snackbar("更改失败", '密码错误');
+    }else{
+      Get.snackbar("错误","数据库错误");
+    }
   }
 }
