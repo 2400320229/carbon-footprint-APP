@@ -94,14 +94,16 @@ class _dataListState extends State<dataList> {
         Expanded(child:ListView.builder(itemCount: NodeList.length,
             itemBuilder: (BuildContext context,index){
               return ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text("产生:"+NodeList[index].count.toString()),
-                    Text("类型:"+NodeList[index].type.toString()),
-                    Text("时间:"+NodeList[index].date.split(' ')[0]),
-                  ],
-                ),
+                title:Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text("产生:"+NodeList[index].count.toString()),
+                        Text("类型:"+NodeList[index].type.toString()),
+                        Text("时间:"+NodeList[index].date.split(' ')[0]),
+                      ],
+                    ),
+                )
               );
             }) )
       ],
@@ -372,11 +374,11 @@ class _UserCardState extends State<UserCard> {
           Container(
             width: 80,
             height: 80,
-            child:Image.asset("images/221.png"),
+            child:ClipOval(child: Image.asset("images/221.png"),)
           ),
           Column(
             children: [
-              Text(widget.username.toString(),style: TextStyle(fontSize: 30),),
+              Text(widget.username.toString(),style: TextStyle(fontSize: 25),),
               Text("总产生量："+sumData)
             ],
           )

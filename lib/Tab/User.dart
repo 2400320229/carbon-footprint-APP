@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Base/Item.dart';
@@ -5,7 +7,7 @@ import 'package:flutter_try/Pages/main.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import '../Pages/land.dart';
 
 class User_page extends StatefulWidget {
@@ -226,6 +228,9 @@ class UserLanding extends StatefulWidget {
 
 class _UserLandingState extends State<UserLanding> {
 
+  String user_name = '';
+  String image = '';
+  String email = '';
   bool is_landing = false;
   @override
   void initState() {
@@ -235,11 +240,25 @@ class _UserLandingState extends State<UserLanding> {
   }
   init()async{
     final prefs = await SharedPreferences.getInstance();
-    var a = (await prefs.getBool("is_land"))!;
+    var a = (await prefs.getBool("is_land"))??false;
+    email = await prefs.getString("user_email")??"";
+    var ip = await prefs.getString("ip")??"";
     setState(() {
       is_landing = a;
     });
-
+    logger.d("ip ::: "+ip+"  "+email);
+    final response = await http.get(
+        Uri.parse("http://${ip}:8000/get_user_by_email?email=${email}"),
+        headers:{'Content-Type': 'application/json'},
+    );
+    logger.d(response.body);
+    final jsonMap = json.decode(response.body) as Map<String, dynamic>;
+    final message = jsonMap['message'] as List<dynamic>;
+    setState(() {
+      image = message[4] == "0" ? message[4] + ".png":message[4] + ".jpg" ;
+      user_name = message[0].toString();
+    });
+    logger.d("image::"+image+user_name);
   }
   @override
   Widget build(BuildContext context) {
@@ -254,15 +273,29 @@ class _UserLandingState extends State<UserLanding> {
               style: BorderStyle.solid
           )
       ),
-
       child: Column(
         children: [
           if(is_landing)
             GestureDetector(
               child: Row(
                 children: [
-                  Icon(Icons.person,size: 50,),
-                  Text("")
+                  Container(
+                    width: 100,
+                    height: 80,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(80)
+                    ),
+                    child:ClipOval(
+                      child: image != ''?Image.asset("images/user/$image"):Image.asset("images/user/1.jpg"),
+                    ),
+                  ),
+
+                  Row(
+                    children: [
+                      Text("用户名："),
+                      Text(user_name,style: TextStyle(fontSize: 30))
+                    ],
+                  ),
                 ],
               ),
               onTap: (){
@@ -275,9 +308,9 @@ class _UserLandingState extends State<UserLanding> {
               height: 80,
               child:GestureDetector(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("未登录",style: TextStyle(fontSize: 40,color: Colors.green),),
-                    Text("点击登录")
+                    Text("未登录",style: TextStyle(fontSize: 40,color: Colors.green),)
                   ],
                 ),
                 onTap: (){

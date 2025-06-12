@@ -382,7 +382,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                     ),),
                     ElevatedButton(onPressed: (){
                       widget.On_show();
-                      }, child: Text("保存"),
+                      }, child: Text("返回"),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(100, 50),
                         side: BorderSide(
