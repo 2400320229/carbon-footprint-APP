@@ -97,7 +97,10 @@ class _Category_pageState extends State<Category_page> {
                   height: 50,
                   child: ElevatedButton(onPressed:(){
                     Get.snackbar("writ", "正在思考中，请耐心等待",backgroundColor: Colors.green);
-                  } , child: Text("等待中"))
+                  } , child: Container(
+                    width: 160,
+                    child: Text("等待"),
+                  ))
                   ),
               if(!is_waiting)
                 ElevatedButton(onPressed:(){chat();} , child: Text("chat")),
@@ -150,7 +153,10 @@ class _Chat_ListState extends State<Chat_List> {
             SizedBox(width: 10,),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [Icon(Icons.person)],
+              children: [Container(
+                height:60, width: 60,
+                child:Image.asset("images/221.png")
+              )],
             )
           ]:[
             Container(
@@ -164,7 +170,7 @@ class _Chat_ListState extends State<Chat_List> {
                           width: 50,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [Image.asset("images/221.png")],
+                            children: [Image.asset("images/robot.png")],
                           )
                       ),
                     ],
@@ -201,7 +207,6 @@ class _Chat_ListState extends State<Chat_List> {
     });
     logger.d(chatHistory);
     logger.d(chatHistory[0]["content"].toString());
-
   }
   @override
   void didUpdateWidget(covariant Chat_List oldWidget) {

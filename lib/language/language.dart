@@ -68,6 +68,7 @@ class Message extends Translations{
       "language":"语言",
       "password":"密码",
       "register":"注册",
+      "land":"登录",
     },
     "en_US":{
       "holle":"holle",
@@ -131,6 +132,7 @@ class Message extends Translations{
       "result is: ":"Result is: ",
       "email":"email",
       "register":"register",
+      "land":"land",
     }
   };
 }

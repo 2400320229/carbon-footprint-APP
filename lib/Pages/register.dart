@@ -62,7 +62,7 @@ class _LandState extends State<Register> {
                     width: double.infinity,
                     child: TextField(controller: user_name,
                       decoration: InputDecoration(
-                          label: Text("用户名"),
+                          label: Text("userName".tr),
                           border: OutlineInputBorder()
                       ),
                     ),
@@ -74,7 +74,7 @@ class _LandState extends State<Register> {
                     width: double.infinity,
                     child: TextField(controller: pass_word,
                       decoration: InputDecoration(
-                          label: Text("密码"),
+                          label: Text("password".tr),
                           border: OutlineInputBorder()
                       ),
                     ),
@@ -86,7 +86,7 @@ class _LandState extends State<Register> {
                     width: double.infinity,
                     child: TextField(controller: email,
                       decoration: InputDecoration(
-                          label: Text("邮箱"),
+                          label: Text("email".tr),
                           border: OutlineInputBorder()
                       ),
                     ),
@@ -144,7 +144,7 @@ class _LandState extends State<Register> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(onPressed: (){Get.back();},
-                        child: Text("返回"),
+                        child: Text("back".tr),
                         style: ElevatedButton.styleFrom(
                           fixedSize: Size(160, 50), // 设置固定尺寸
                           side: BorderSide(
@@ -166,7 +166,7 @@ class _LandState extends State<Register> {
                         }
                         // insert_user();
 
-                      }, child: Text("注册"),
+                      }, child: Text("register".tr),
                         style: ElevatedButton.styleFrom(
                           fixedSize: Size(160, 50), // 设置固定尺寸
                           side: BorderSide(
