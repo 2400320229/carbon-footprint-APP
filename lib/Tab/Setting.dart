@@ -45,7 +45,7 @@ class _OpenState extends State<DataPage> {
                         borderRadius: BorderRadius.circular(10),
                         color: Color(0xFF578063),
                       ),
-                      child: Text("本地数据",style: TextStyle(
+                      child: Text("localData".tr,style: TextStyle(
                           fontSize: 30
                       ),)
                   ),
@@ -68,7 +68,7 @@ class _OpenState extends State<DataPage> {
                         borderRadius: BorderRadius.circular(10),
                         color: Color(0xFF9E8867),
                       ),
-                      child: Text("账号数据",style: TextStyle(
+                      child: Text("userData".tr,style: TextStyle(
                           fontSize: 30
                       ),)
                   ),
@@ -302,7 +302,7 @@ class _Setting_pageState extends State<Setting_page> {
           monthlySales = _monthlySales;
           productSales = _productSales;
           land = [
-            Text("总共产生碳足迹:"+summary["sum"]!.toString()),// 重新初始化 land
+            Text("总共产生碳足迹:"+summary["sum"]!.toString()+"CO₂e"),// 重新初始化 land
             PieChartSample2(pieData: pieData),
             BarChartSample(productSales: productSales),
             LineChartSample(monthlySales: monthlySales),
@@ -583,7 +583,7 @@ class _LandSettingState extends State<LandSetting> {
           monthlySales = _monthlySales;
           productSales = _productSales;
           land = [
-            Text("总共产生碳足迹:"+summary["sum"]!.toString()),// 重新初始化 land
+            Text("总共产生碳足迹:"+summary["sum"]!.toString()+"CO₂e"),// 重新初始化 land
             PieChartSample2(pieData: pieData),
             BarChartSample(productSales: productSales),
             LineChartSample(monthlySales: monthlySales),

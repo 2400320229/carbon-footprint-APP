@@ -2,16 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_try/Tab/Setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../model/DataBase.dart';
 import 'package:logger/logger.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import '../Base/Item.dart';
-import 'main.dart';
 // 发送邮箱验证码
 int SendWaitTime = 10;
 
@@ -58,7 +53,7 @@ class _LandState extends State<Register> {
                   Row(mainAxisAlignment: MainAxisAlignment.start,
                     children: [BackButton(onPressed: (){Get.back();},)],),
                   Container(width: double.infinity,height: 300,
-                    child: Image.asset("images/221.png"),//logo
+                    child: Image.asset("images/logo.png"),//logo
                   ),
                   SizedBox(height: 10,),
                   Container(

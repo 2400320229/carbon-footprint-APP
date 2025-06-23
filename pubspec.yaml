@@ -42,6 +42,7 @@ dependencies:
   flutter_email_sender: ^5.0.2
   fl_chart: ^0.71.0
   get: ^4.6.5
+  flutter_native_splash: ^2.3.2
 
 
 
@@ -103,3 +104,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_native_splash:
+  color: "#000000"  # 背景色
+  image: images/background.png  # 启动图片
+  android: true
+  ios: true
+  web: false
+  color_dark: "#000000"  # 深色模式背景色
+  image_dark: images/background.png  # 深色模式图片
+  fullscreen: true  # 全屏显示

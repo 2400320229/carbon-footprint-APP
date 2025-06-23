@@ -32,7 +32,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-
+  String language = 'zh_CN';
   int currentIndex=0;
   List<Widget>Page=[
     Home_page(),
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
       translations: Message(),
-      locale: Locale("zh","CN"),
+      locale: Locale(language.split("_")[0],language.split("_")[1]),
       fallbackLocale: Locale("en","US"),
       initialRoute: "/",
       defaultTransition: Transition.rightToLeftWithFade,
@@ -79,8 +79,10 @@ class _MyAppState extends State<MyApp> {
     ));
   }
   void init_app()async{
+
     logger.d("welcome!");
     final prefs = await SharedPreferences.getInstance();
+    prefs.setString("language","zh_CN");
     bool? is_load = await prefs.getBool("is_load");
     if(is_load != true){
         logger.d("is_not_load");
@@ -89,6 +91,11 @@ class _MyAppState extends State<MyApp> {
     }else{
       all_ItemList = await nodedb.get_allItem();
     }
+    var a = prefs.getString("language");
+    setState(() {
+      print(language);
+      language = a.toString();
+    });
   }
   add_data()async {
     for(Item a in List_data){

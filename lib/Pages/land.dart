@@ -50,7 +50,7 @@ class _LandState extends State<Land> {
                 Row(mainAxisAlignment: MainAxisAlignment.start,
                 children: [BackButton(onPressed: (){Get.back();},)],),
                 Container(width: double.infinity,height: 300,
-                child: Image.asset("images/221.png"),
+                child: Image.asset("images/logo.png"),
                 ),
                 SizedBox(height: 10,),
                 Container(
@@ -59,7 +59,7 @@ class _LandState extends State<Land> {
                   width: double.infinity,
                   child: TextField(controller: user_name,
                   decoration: InputDecoration(
-                      label: Text("邮箱"),
+                      label: Text("email".tr),
                       border: OutlineInputBorder()
                   ),
                 ),
@@ -71,7 +71,7 @@ class _LandState extends State<Land> {
                   width: double.infinity,
                   child: TextField(controller: pass_word,
                   decoration: InputDecoration(
-                      label: Text("密码"),
+                      label: Text("password".tr),
                       border: OutlineInputBorder()
                   ),
                 ),
@@ -84,7 +84,7 @@ class _LandState extends State<Land> {
                       if(pass_word.text.isNotEmpty&&user_name.text.isNotEmpty){
                         land();
                       }
-                    }, child: Text("登录"),
+                    }, child: Text("land".tr),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(220, double.infinity), // 设置固定尺寸
                         side: BorderSide(
@@ -100,7 +100,7 @@ class _LandState extends State<Land> {
                       ),
                     ),
                     ElevatedButton(onPressed: (){Get.toNamed("/register");},
-                      child: Text("注册"),
+                      child: Text("register".tr),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(100, double.infinity), // 设置固定尺寸
                         side: BorderSide(

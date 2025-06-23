@@ -134,6 +134,7 @@ class _UpdateLanguageState extends State<UpdateLanguage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     logger.d(language);
   }
   @override
@@ -145,24 +146,47 @@ class _UpdateLanguageState extends State<UpdateLanguage> {
         CheckboxListTile(
           title: Text('中文'),
           value: language == "zh_CN",
-          onChanged: (bool? newValue) {
+          onChanged: (bool? newValue) async {
+
             setState(() {
               Get.updateLocale(Locale("zh_CN"));
               language = "zh_CN";
             });
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setString("language",language);
           },
-          secondary: Icon(Icons.article), // 可选图标
+          secondary: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width:40,
+                height:20,
+                child: Image.asset("images/CNflag.png"),
+              )
+            ],
+          )
         ),
         CheckboxListTile(
           title: Text('English'),
           value: language == "en_US",
-          onChanged: (bool? newValue) {
+          onChanged: (bool? newValue) async {
             setState(() {
               Get.updateLocale(Locale('en_US'));
               language = "en_US";
             });
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setString("language",language);
           },
-          secondary: Image.asset("images/221.png"), // 可选图标
+          secondary: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width:40,
+                height:20,
+                child: Image.asset("images/USflag.png"),
+              )
+            ],
+          )
         ),
       ],
     );
@@ -178,10 +202,18 @@ class TextList extends StatelessWidget {
       children: [
         Column(
           children: [
-            Text("——、软件背景"),
-            Text(in_background),
-            Text("二、软件用途"),
-            Text(in_use)
+            Row(children: [SizedBox(width: 10,),IconButton(onPressed:(){Get.back();}, icon: ImageIcon(AssetImage("images/icons/back.png")))],),
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Text("——、软件背景"),
+                  Text(in_background),
+                  Text("二、软件用途"),
+                  Text(in_use)
+                ],
+              ),
+            )
           ],
         ),
 
@@ -264,21 +296,43 @@ class _UserListState extends State<UserList> {
       headers: {'Content-Type': 'application/json'},
     );
     logger.d(response.body.toString());
-    final jsonMap = json.decode(response.body) as Map<String, dynamic>;
+    final decodedData = utf8.decode(response.bodyBytes);
+    final jsonMap = json.decode(decodedData) as Map<String, dynamic>;
     final message = jsonMap['message'] as List<dynamic>;
+    logger.d(message.length.toString());
     logger.d(message[0]);
     logger.d(message[0][5]);
     List<Map<String,String>> newList = [];
     for(var a in message){
+      double sum = 0;
+      for(var i in a[5].toString().split("|")){
+        if(i.isNotEmpty){
+          sum += double.parse(i.split("?")[0]);
+        }
+      }
       newList.add({
-        "username":a[0].toString(),
-        "data":a[5].toString(),
+        "username":a[1].toString(),
+        "data":sum.toStringAsFixed(2).toString(),
         "image":a[4].toString()
       });
     }
+    List<Map<String,String>> newList1 = [];
+    Map<String,String> maxUser = {};
+    for(var a = 0;a<newList.length;a++){
+      var max = 0.0;
+      for(var b = 0;b<newList.length;b++){
+        if(double.parse(newList[b]["data"].toString())>max){
+          max = double.parse(newList[b]["data"].toString());
+          maxUser = newList[b];
+        }
+      }
+      newList1.add(maxUser);
+      newList.remove(maxUser);
+    }
+    newList1.add(newList[0]);
     setState(() {
-      logger.d(newList);
-      userList = newList;
+      logger.d(newList1);
+      userList = newList1;
     });
   }
   @override
@@ -354,14 +408,8 @@ class _UserCardState extends State<UserCard> {
   @override
   void initState() {
     // TODO: implement initState
-    double sum = 0;
-    for(var i in widget.data.toString().split("|")){
-      if(i.isNotEmpty){
-        sum += double.parse(i.split("?")[0]);
-      }
-    }
     setState(() {
-      sumData = sum.toString();
+      sumData = widget.data.toString();
     });
 
   }
@@ -379,7 +427,7 @@ class _UserCardState extends State<UserCard> {
           Column(
             children: [
               Text(widget.username.toString(),style: TextStyle(fontSize: 25),),
-              Text("总产生量："+sumData)
+              Expanded(child: Text("总产生量："+sumData+"CO₂e"))
             ],
           )
         ],

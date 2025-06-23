@@ -42,7 +42,7 @@ class _User_pageState extends State<User_page> {
                               Container(
                                 child: ElevatedButton(onPressed: (){
                                   Get.toNamed("/DetailPage",arguments: "5");
-                                }, child:Row(children: [Text("排行榜"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                                }, child:Row(children: [Text("lank".tr),ImageIcon(AssetImage("images/icons/goto.png"))],),
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(300, 60), // 设置固定尺寸
                                     side: BorderSide(
@@ -61,7 +61,7 @@ class _User_pageState extends State<User_page> {
                               Container(
                                 child: ElevatedButton(onPressed: (){
                                   Get.toNamed("/DetailPage",arguments: "1");
-                                }, child: Row(children: [Text("数据"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                                }, child: Row(children: [Text("data".tr),ImageIcon(AssetImage("images/icons/goto.png"))],),
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(300, 60), // 设置固定尺寸
                                     side: BorderSide(
@@ -81,7 +81,7 @@ class _User_pageState extends State<User_page> {
                               Container(
                                 child: ElevatedButton(onPressed: (){
                                   Get.toNamed("/DetailPage",arguments: "2");
-                                }, child:Row(children: [Text("语言"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                                }, child:Row(children: [Text("language".tr),ImageIcon(AssetImage("images/icons/goto.png"))],),
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(300, 60), // 设置固定尺寸
                                     side: BorderSide(
@@ -100,7 +100,7 @@ class _User_pageState extends State<User_page> {
                               Container(
                                 child: ElevatedButton(onPressed: (){
                                   Get.toNamed("/DetailPage",arguments: "6");
-                                }, child:Row(children: [Text("更改密码"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                                }, child:Row(children: [Text("updatePassword".tr),ImageIcon(AssetImage("images/icons/goto.png"))],),
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(300, 60), // 设置固定尺寸
                                     side: BorderSide(
@@ -138,7 +138,7 @@ class _User_pageState extends State<User_page> {
                               Container(
                                 child: ElevatedButton(onPressed: (){
                                   Get.toNamed("/DetailPage",arguments: "3");
-                                }, child:Row(children: [Text("IP地址"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                                }, child:Row(children: [Text("ipAddress".tr),ImageIcon(AssetImage("images/icons/goto.png"))],),
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(300, 60), // 设置固定尺寸
                                     side: BorderSide(
@@ -157,7 +157,7 @@ class _User_pageState extends State<User_page> {
                               Container(
                                 child: ElevatedButton(onPressed: (){
                                   _showInputDialog(context);
-                                }, child:Row(children: [Text("退出登录"),ImageIcon(AssetImage("images/icons/goto.png"))],),
+                                }, child:Row(children: [Text("exit".tr),ImageIcon(AssetImage("images/icons/goto.png"))],),
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(300, 60), // 设置固定尺寸
                                     side: BorderSide(
@@ -252,11 +252,12 @@ class _UserLandingState extends State<UserLanding> {
         headers:{'Content-Type': 'application/json'},
     );
     logger.d(response.body);
-    final jsonMap = json.decode(response.body) as Map<String, dynamic>;
+    final decodedData = utf8.decode(response.bodyBytes);
+    final jsonMap = json.decode(decodedData) as Map<String, dynamic>;
     final message = jsonMap['message'] as List<dynamic>;
     setState(() {
       image = message[4] == "0" ? message[4] + ".png":message[4] + ".jpg" ;
-      user_name = message[0].toString();
+      user_name = message[1].toString();
     });
     logger.d("image::"+image+user_name);
   }
@@ -299,7 +300,6 @@ class _UserLandingState extends State<UserLanding> {
                 ],
               ),
               onTap: (){
-
               },
             ),
           if(!is_landing)
@@ -318,7 +318,6 @@ class _UserLandingState extends State<UserLanding> {
                 },
               ),
             )
-
         ],
       ),
     );

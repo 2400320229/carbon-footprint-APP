@@ -16,7 +16,7 @@ List<Item> item_yi_arr = [];
 List<Item> item_shi_arr = [];
 List<Item> item_zhu_arr = [];
 List<Item> item_xing_arr = [];
-List<List<Item>> arr_type = List_o_data;
+List<List<Item>> arr_type = [];
 int Select_count = 0;
 Item select_item = new Item(name:'', count:0,type: 0,sign: "");
 Item add_new_item = new Item(name:'', count:0,type: 0,sign: '');
@@ -37,8 +37,9 @@ class _Home_pageState extends State<Home_page> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //logger.d(all_ItemList);
-    //init();
+    setState(() {
+      arr_type = List_o_data;
+    });
   }
 
   Future<void> _pickImage() async {
@@ -57,7 +58,7 @@ class _Home_pageState extends State<Home_page> {
     return Scaffold(
         backgroundColor: Color(0x4FF3F3F3),
         appBar: AppBar(
-          title: Text("碳足迹计算器"),
+          title: Text("carbon footprint calculator".tr),
           bottom:PreferredSize(
             preferredSize: const Size.fromHeight(kBottomNavigationBarHeight),
             child: BottomNavigationBar(
@@ -196,19 +197,19 @@ class _My_GridviewState extends State<My_Gridview> {
     List<Item> item_xing_arr = allItemList["4"] ?? [];
 
     if (item_yi_arr.isNotEmpty && item_yi_arr.last.name != "add") {
-      item_yi_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+      item_yi_arr.add(Item(name: "add".tr, count: 0, type: 0, sign: ""));
     }
 
     if (item_shi_arr.isNotEmpty && item_shi_arr.last.name != "add") {
-      item_shi_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+      item_shi_arr.add(Item(name: "add".tr, count: 0, type: 0, sign: ""));
     }
 
     if (item_zhu_arr.isNotEmpty && item_zhu_arr.last.name != "add") {
-      item_zhu_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+      item_zhu_arr.add(Item(name: "add".tr, count: 0, type: 0, sign: ""));
     }
 
     if (item_xing_arr.isNotEmpty && item_xing_arr.last.name != "add") {
-      item_xing_arr.add(Item(name: "add", count: 0, type: 0, sign: ""));
+      item_xing_arr.add(Item(name: "add".tr, count: 0, type: 0, sign: ""));
     }
 
     logger.d("数据处理完成");
@@ -366,7 +367,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                       }else{
                         Get.snackbar("请输入数据", "",backgroundColor: Colors.green);
                       }
-                    }, child: Text("添加"),
+                    }, child: Text("add".tr),
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(100, 50),
                       side: BorderSide(
@@ -382,7 +383,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                     ),),
                     ElevatedButton(onPressed: (){
                       widget.On_show();
-                      }, child: Text("返回"),
+                      }, child: Text("back".tr),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(100, 50),
                         side: BorderSide(
@@ -455,10 +456,10 @@ class _Conpute_pageState extends State<Conpute_page> {
                       double b = select_item.count;
                       setState(() {
                         result = (a*b).toString();
-                        display_result = "结果为："+ (double.parse(result).toStringAsFixed(2)).toString();
+                        display_result = "result is: ".tr+ (double.parse(result).toStringAsFixed(2)).toString()+"CO₂e";
                       });
                       logger.d(result);
-                    }, child: Text("计算"),
+                    }, child: Text("calculate".tr),
                       style: ElevatedButton.styleFrom(
                       fixedSize: Size(100, 50),
                       side: BorderSide(
@@ -475,7 +476,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                     ),
                     ElevatedButton(onPressed: (){
                       add_conut_node();
-                    }, child: Text("保存"),
+                    }, child: Text("sava".tr),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(100, 50),
                         side: BorderSide(
