@@ -3,7 +3,7 @@ import 'package:flutter_try/Pages/Detail.dart';
 import 'package:flutter_try/Pages/register.dart';
 import 'package:get/get.dart';
 import '../Pages/land.dart';
-import '../Pages/main.dart';
+import '../main.dart';
 
 class AppPage{
   static final routers = [

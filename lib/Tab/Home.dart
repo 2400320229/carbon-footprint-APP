@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_try/Base/Item.dart';
-import 'package:flutter_try/Pages/main.dart';
+import 'package:flutter_try/main.dart';
 import 'package:get/get.dart';
 import 'package:flutter_try/Pages/land.dart';
 import 'package:http/http.dart' as http;
@@ -112,7 +112,6 @@ class _Home_pageState extends State<Home_page> {
                   setState(() {
                     is_show_count = false;
                   });
-
                 },
                 is_add: (){
                   setState(() {
@@ -298,8 +297,8 @@ class _Conpute_pageState extends State<Conpute_page> {
     DateTime now = DateTime.now();
     var a = new CountNode(count: double.parse(result), type: Select_count+1, date: now.toString());
     await nodedb.insert_CountNode(a);
-    widget.On_show;
     sava_data();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -449,7 +448,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                   children: [Text(display_result,style: TextStyle(fontSize: 30,),maxLines: 1,)],
                 ),
                 Row(
-                  children: [Text(display_result1,style: TextStyle(fontSize: 20,),maxLines: 1,)],
+                  children: [Text(display_result1,style: TextStyle(fontSize: 10,),maxLines: 1,)],
                 ),
                 SizedBox(height: 5,),
                 Row(
@@ -514,7 +513,7 @@ class _Conpute_pageState extends State<Conpute_page> {
       var newData = "|"+result+"?"+(Select_count+1).toString()+"?"+now.toString();
       logger.d(newData);
       await http.post(
-        Uri.parse("http://$ip:8000/update_data"),
+        Uri.parse("$ip/update_data"),
         body:jsonEncode({"email":email,"data":newData.toString()}),
         headers: {'Content-Type': 'application/json'}
       );
@@ -522,9 +521,8 @@ class _Conpute_pageState extends State<Conpute_page> {
     else{
       Get.snackbar("数据不完整", "请登录或输入ip地址");
     }
-
+    widget.On_show();
   }
   setUserData()async{
-
   }
 }

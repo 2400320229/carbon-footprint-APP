@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Base/Item.dart';
-import 'package:flutter_try/Pages/main.dart';
+import 'package:flutter_try/main.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -248,7 +248,7 @@ class _UserLandingState extends State<UserLanding> {
     });
     logger.d("ip ::: "+ip+"  "+email);
     final response = await http.get(
-        Uri.parse("http://${ip}:8000/get_user_by_email?email=${email}"),
+        Uri.parse("${ip}/get_user_by_email?email=${email}"),
         headers:{'Content-Type': 'application/json'},
     );
     logger.d(response.body);

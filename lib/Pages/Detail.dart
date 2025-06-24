@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Base/Item.dart';
-import 'main.dart';
+import '../main.dart';
 
 
 class DetailPage extends StatefulWidget {
@@ -333,7 +333,7 @@ class _UserListState extends State<UserList> {
       return;
     }
     final response = await http.get(
-      Uri.parse('http://$ip:8000/get_user'),
+      Uri.parse('$ip/get_user'),
       headers: {'Content-Type': 'application/json'},
     );
     logger.d(response.body.toString());
@@ -348,7 +348,11 @@ class _UserListState extends State<UserList> {
       double sum = 0;
       for(var i in a[5].toString().split("|")){
         if(i.isNotEmpty){
-          sum += double.parse(i.split("?")[0]);
+          try{
+            sum += double.parse(i.split("?")[0]);
+          }catch(e){
+           sum = 0;
+          }
         }
       }
       newList.add({
@@ -357,24 +361,22 @@ class _UserListState extends State<UserList> {
         "image":a[4].toString()
       });
     }
-    List<Map<String,String>> newList1 = [];
-    Map<String,String> maxUser = {};
-    for(var a = 0;a<newList.length;a++){
-      var max = 0.0;
-      for(var b = 0;b<newList.length;b++){
-        if(double.parse(newList[b]["data"].toString())>max){
-          max = double.parse(newList[b]["data"].toString());
-          maxUser = newList[b];
-        }
-      }
-      newList1.add(maxUser);
-      newList.remove(maxUser);
-    }
-    newList1.add(newList[0]);
-    setState(() {
-      logger.d(newList1);
-      userList = newList1;
+    logger.d(newList.length);
+    // 假设 newList 是 List<Map<String, String>> 类型
+    List<Map<String, String>> sortedList = List.from(newList);
+
+// 使用 sort 方法进行降序排序
+    sortedList.sort((a, b) {
+      double aValue = double.parse(a["data"] ?? "0");
+      double bValue = double.parse(b["data"] ?? "0");
+      return bValue.compareTo(aValue); // 降序排序
     });
+
+// 更新状态
+    setState(() {
+      userList = sortedList;
+    });
+
   }
   @override
   Widget build(BuildContext context) {
@@ -445,6 +447,7 @@ class UserCard extends StatefulWidget {
 
 class _UserCardState extends State<UserCard> {
 
+  String image = "0.png";
   String sumData = '';
   @override
   void initState() {
@@ -452,7 +455,7 @@ class _UserCardState extends State<UserCard> {
     setState(() {
       sumData = widget.data.toString();
     });
-
+    image = widget.image == "0" ? widget.image! + ".png":widget.image! + ".jpg" ;
   }
 
   @override
@@ -460,10 +463,15 @@ class _UserCardState extends State<UserCard> {
     return Container(
       child:Row(
         children: [
-          Container(
-            width: 80,
-            height: 80,
-            child:ClipOval(child: Image.asset("images/221.png"),)
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  width: 40,
+                  height: 40,
+                  child:ClipOval(child: Image.asset("images/user/${image}"),)
+              ),
+            ],
           ),
           Column(
             children: [
@@ -605,7 +613,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
   update_password()async{
     final response = await http.post(
-      Uri.parse('http://$ip:8000/update_password'),
+      Uri.parse('$ip/update_password'),
       body: jsonEncode({"email":email.text,"old_password":old_password.text,"new_password":new_password.text}),
       headers: {'Content-Type': 'application/json'},
     );

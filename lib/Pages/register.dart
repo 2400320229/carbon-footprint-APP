@@ -29,10 +29,12 @@ class _LandState extends State<Register> {
   bool is_success = false;
   bool is_send = false;
 
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    image.text = "0";
   }
 
   @override
@@ -54,6 +56,40 @@ class _LandState extends State<Register> {
                     children: [BackButton(onPressed: (){Get.back();},)],),
                   Container(width: double.infinity,height: 300,
                     child: Image.asset("images/logo.png"),//logo
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(onPressed: (){
+                        var a = int.parse(image.text);
+                        if(a>0){
+                          a--;
+                        }else{
+                          a = 5;
+                        }
+                        setState(() {
+                          image.text = a.toString();
+                        });
+                      }, icon: Icon(Icons.arrow_back)),
+                      Container(
+                        width: 80,
+                        height: 80,
+                        child: ClipOval(
+                          child:Image.asset(image.text == "0"?"images/user/0.png":"images/user/"+image.text+".jpg")
+                        )
+                      ),
+                      IconButton(onPressed: (){
+                        var a = int.parse(image.text);
+                        if(a<5){
+                          a++;
+                        }else{
+                          a = 0;
+                        }
+                        setState(() {
+                          image.text = a.toString();
+                        });
+                      }, icon: Icon(Icons.arrow_forward)),
+                    ],
                   ),
                   SizedBox(height: 10,),
                   Container(
@@ -197,7 +233,7 @@ class _LandState extends State<Register> {
       var ip = prefs.getString("ip");
       logger.d(ip);
       final response = await http.post(
-        Uri.parse('http://$ip:8000/insert_user'),
+        Uri.parse('$ip/insert_user'),
         body: jsonEncode({"name":user_name.text,"password":pass_word.text,'email': email.text,"image":image.text.isNotEmpty?image.text:"0"}),
         headers: {'Content-Type': 'application/json'},
       );
@@ -227,7 +263,7 @@ class _LandState extends State<Register> {
     final prefs = await SharedPreferences.getInstance();
     var ip = prefs.getString("ip");
     final response = await http.post(
-      Uri.parse('http://$ip:8000/send-code'),
+      Uri.parse('$ip/send-code'),
       body: jsonEncode({'email': email}),
       headers: {'Content-Type': 'application/json'},
     );
@@ -255,7 +291,7 @@ class _LandState extends State<Register> {
     final prefs = await SharedPreferences.getInstance();
     var ip = prefs.getString("ip");
     final response = await http.post(
-      Uri.parse('http://$ip:8000/verify-code'),
+      Uri.parse('$ip/verify-code'),
       body: jsonEncode({'email': email, 'code': code}),
       headers: {'Content-Type': 'application/json'},
     );

@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../Base/Item.dart';
-import 'main.dart';
+import '../main.dart';
 
 // 发送邮箱验证码
 int SendWaitTime = 10;
@@ -128,7 +128,7 @@ class _LandState extends State<Land> {
     var ip = prefs.getString("ip");
     logger.d(ip);
     final response = await http.post(
-      Uri.parse('http://$ip:8000/land'),
+      Uri.parse('$ip/land'),
       body: jsonEncode({"email":user_name.text,'password':pass_word.text }),
       headers: {'Content-Type': 'application/json'},
     );

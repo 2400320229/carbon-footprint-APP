@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/DataBase.dart';
 import 'package:logger/logger.dart';
-import '../Pages/main.dart';
+import '../main.dart';
 
 var logger = Logger();
 List<CountNode> data = [];
@@ -371,7 +371,7 @@ class _LandSettingState extends State<LandSetting> {
       }
 
       final response = await http.get(
-        Uri.parse('http://$ip:8000/get_data?email=${email}'),
+        Uri.parse('$ip/get_data?email=${email}'),
         headers: {'Content-Type': 'application/json'},
       );
 

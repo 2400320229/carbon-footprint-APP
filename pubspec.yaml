@@ -44,7 +44,7 @@ dependencies:
   get: ^4.6.5
   flutter_native_splash: ^2.3.2
   url_launcher: ^6.1.0
-
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -113,3 +113,8 @@ flutter_native_splash:
   color_dark: "#000000"  # 深色模式背景色
   image_dark: images/background.png  # 深色模式图片
   fullscreen: true  # 全屏显示
+
+flutter_launcher_icons:
+  image_path: "images/icons/logo.png"  # 你的原始图标路径
+  android: true
+  ios: true
