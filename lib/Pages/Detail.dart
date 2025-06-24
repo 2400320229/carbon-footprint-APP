@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_try/Pages/land.dart';
 import 'package:flutter_try/model/String.dart';
@@ -204,13 +205,53 @@ class TextList extends StatelessWidget {
           children: [
             Row(children: [SizedBox(width: 10,),IconButton(onPressed:(){Get.back();}, icon: ImageIcon(AssetImage("images/icons/back.png")))],),
             Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Text("——、软件背景"),
+                  Text("一、软件背景",style: TextStyle(
+                    color: Color(0xFF427743),
+                    fontSize: 30
+                  ),),
                   Text(in_background),
-                  Text("二、软件用途"),
-                  Text(in_use)
+                  Text("二、软件用途",style: TextStyle(
+                      color: Color(0xFF427743),
+                      fontSize: 30
+                  ),),
+                  Text(in_use),
+                  Text("三、基础概念",style: TextStyle(
+                      color: Color(0xFF427743),
+                      fontSize: 30
+                  ),),
+                  Text(in_knowledge1),
+                  Text("四、日常生活",style: TextStyle(
+                      color: Color(0xFF427743),
+                      fontSize: 30
+                  ),),
+                  Text(in_knowledge2),
+                  Text("**开发者**",style: TextStyle(
+                      color: Color(0xFF427743),
+                      fontSize: 30
+                  ),),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Color(0xFF427743),width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text("张宇：负责App架构和本地数据库的构建，部分UI设计。\n"),
+                        Text("王梓忆：制作碳足迹计算网站。\n"),
+                        Text("董泽晨：制作后端服务器，包括接口设计和数据库构建。\n"),
+                        Text("朱国昱：负责碳足迹宣传手册的制作，ppt制作和部分APP的UI设计。\n"),
+                        Text("陈弘辉：负责碳足迹算法的设计，资料搜寻和部分APP的UI设计。\n"),
+                      ],
+                    ),
+                  ),
+                  LinkText(
+                    url: 'https://www.baidu.com',
+                    displayText: '点击访问示例网站',
+                  )
                 ],
               ),
             )
@@ -579,5 +620,37 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     }else{
       Get.snackbar("错误","数据库错误");
     }
+  }
+}
+
+
+class LinkText extends StatelessWidget {
+  final String url;
+  final String displayText;
+
+  const LinkText({
+    required this.url,
+    required this.displayText,
+    Key? key,
+  }) : super(key: key);
+
+  Future<void> _launchURL() async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: _launchURL,
+      child: Text(
+        displayText,
+        style: TextStyle(
+          color: Colors.blue,
+          decoration: TextDecoration.underline,
+        ),
+      ),
+    );
   }
 }

@@ -283,6 +283,7 @@ class _Conpute_pageState extends State<Conpute_page> {
   var add_type = select_item.type;
   String result = '';
   String display_result = '';
+  String display_result1 = '';
   add_item()async{
     if(add_count.text.isNotEmpty&&add_name.text.isNotEmpty){
       add_new_item = await new Item(name: "+"+add_name.text, count: double.parse(add_count.text), type: Select_count+1,sign: add_sign.text);
@@ -447,6 +448,9 @@ class _Conpute_pageState extends State<Conpute_page> {
                 Row(
                   children: [Text(display_result,style: TextStyle(fontSize: 30,),maxLines: 1,)],
                 ),
+                Row(
+                  children: [Text(display_result1,style: TextStyle(fontSize: 20,),maxLines: 1,)],
+                ),
                 SizedBox(height: 5,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -457,6 +461,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                       setState(() {
                         result = (a*b).toString();
                         display_result = "result is: ".tr+ (double.parse(result).toStringAsFixed(2)).toString()+"CO₂e";
+                        display_result1 = "你需要种"+((double.parse(result)/40).toStringAsFixed(3)).toString()+"棵树来实现“碳中和”";
                       });
                       logger.d(result);
                     }, child: Text("calculate".tr),
@@ -476,7 +481,7 @@ class _Conpute_pageState extends State<Conpute_page> {
                     ),
                     ElevatedButton(onPressed: (){
                       add_conut_node();
-                    }, child: Text("sava".tr),
+                    }, child: Text("save".tr),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(100, 50),
                         side: BorderSide(
